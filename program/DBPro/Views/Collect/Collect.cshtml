@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Collection";
+}
+@model CollectViewModel
+<div class="ui centered grid" style="width:80%; margin:auto">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item active">收藏的商品 </a>
+            <a class="item" href="/Collect/Shop">收藏的店铺</a>
+        </div>
+    </div>
+    <div class="eleven wide stretched column">
+        <div class="ui grid segment">
+            @{
+                for (int i = 0; i < Model.LSItem.Count(); i++)
+                {
+                    <div class="five wide column" style="margin-left:14px" id= "@string.Format("item{0}",Model.LSItem[i].itemID)">
+                        <div class="ui link card" onmousedown="clickCard(this.id)" id="@Model.LSItem[i].itemID">
+                            <div class="image">
+                                <img src=@Model.LSItem[i].imagePath style="height:190px" />
+                            </div>
+                            <div class="content">
+                                <div class="row">
+                                    <div class="header">@Model.LSItem[i].itemName</div>
+                                </div>
+                                <div class="row" style="margin-top:5px">
+                                    <h4>
+                                        <i class="yen sign icon"></i>&nbsp;&nbsp;@Model.LSItem[i].itemPrice
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="extra content">
+                                <i class="home blue link icon" onmousemove="deleteFunc()" onmouseout="addFunc()" id="@Model.LSItem[i].shopID"></i>
+                                &nbsp;&nbsp;&nbsp;@Model.LSItem[i].shopName
+                                <i class="trash alternate link icon right floated" onmousemove="deleteFunc()" onmouseout="addFunc()" id=@Model.LSItem[i].itemID></i>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+
+        @*<div class="ui grid container">
+            <div class="five wide column"></div>
+            <div class="six wide column" style="text-align:center">
+                <i class="large chevron left link icon"></i>
+                <b><font size="3">1/4</font></b>
+                <i class="large chevron right link icon"></i>
+            </div>
+            <form method="post" class="four wide column" style="text-align:right">
+                <b>
+                    <font size="3">
+                        第
+                        <div class="ui input mini focus">
+                            <input type="text" value="1" style="width:41px;height:28px">
+                        </div>
+                        页
+                    </font>
+                </b>
+                <button type="submit" class="ui tiny compact button">GO!</button>
+            </form>
+        </div>*@
+    </div>
+</div>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating();
+</script>
+@*7.10修改*@
+<script>
+    //删除商品，未实现
+
+    $('.trash').on('click', function () {
+        $(eval("item" + this.id)).remove();
+
+        var itemid = event.currentTarget.id;
+        //alert(event.currentTarget.id);
+
+        $.ajax({
+            type: "post",
+            url: "/Collect/delectItemFromCollection",
+            data: {
+                i_id: itemid
+            },
+            success: function (result) {
+                alert(result);
+            },
+            error:
+            function (result) {
+                 alert(result);
+             }
+        });
+
+        //用ajax把id为this.id的商品从收藏表中删除
+    });
+    //跳转到对应店铺页面
+    $('.home').on('click', function () {
+        standardPost("/Shops/ShopDetails", this.id, "s_id");
+    });
+    //跳转到商品页面
+    function clickCard(id) {
+        standardPost("/Goods/Details", id, "i_id");
+    }
+    function deleteFunc() {
+        $('.ui.link.card').removeAttr('onmousedown');
+    }
+    function addFunc() {
+        $('.ui.link.card').attr({ "onmousedown": "clickCard(this.id)" });
+    }
+</script>

@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/Semantic-UI-CSS-master/semantic.min.css" rel="stylesheet" type="text/css">
+    @*<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>*@
+    <script src="~/js/jquery-3.1.1/jquery-3.1.1.min.js"></script>
+    <script src="~/css/Semantic-UI-CSS-master/semantic.min.js"></script>
+</head>
+
+<body>
+    @*置顶的导航栏*@
+    <br />
+    <div class="ui inverted menu">
+        <div class="ui inverted segment">
+            <div class="ui medium header" style="margin-bottom: -15px;">
+                <i class="shopping cart icon"></i>
+                <div class="content">
+                    <font>
+                        龟龟购物平台
+                    </font>
+                </div>
+            </div>
+        </div>
+        <div class="right menu">
+            <div class="item" id="userNickName">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        收藏夹
+                    </font>
+                </font>
+            </div>
+            <div class="ui dropdown item">
+                个人中心
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a class="item" href="/Self/Self">个人信息</a>
+                    <a class="item" href="/Order/Order">订单信息</a>
+                    <a class="item" href="" id="shopbtn">申请店铺</a>
+                    @*<a class="item" href="">
+                        <font style="vertical-align: inherit;">
+                            <font style="vertical-align: inherit;">
+                                消息
+                            </font>
+                        </font>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="ui teal left pointing label">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    10
+                                </font>
+                            </font>
+                        </div>
+                    </a>*@
+                </div>
+            </div>
+            <a class="item" href="/Collect/Collect">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        收藏夹
+                    </font>
+                </font>
+            </a>
+            <a class="item" href="/Cart/Cart">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        购物车
+                    </font>
+                </font>
+                <div class="floating ui red label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;" id="itemNum">22</font></font></div>
+            </a>
+            <a class="item" href="/Login/Logout">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        注销
+                    </font>
+                </font>
+            </a>
+            <a class="item" href="/Home/Index">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        首页
+                    </font>
+                </font>
+            </a>
+        </div>
+    </div>
+    @*搜索*@
+    <br />
+    <form action="/Search/ItemSearch" method="post" id="search-form">
+        <div class="ui sticky" style="text-align:center;" id="search">
+            <div class="ui action input" style="width:60%">
+                <div class="ui basic floating dropdown button">
+                    <div class="text">商品</div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu" id="search-menu" name="商品">
+                        <div class="item">商品</div>
+                        <div class="item">店铺</div>
+                    </div>
+                </div>
+                <input type="text" placeholder="Search..." name="key" id="key-content">
+                <button class="ui red button" type="submit" id="search-button">Search</button>
+            </div>
+        </div>
+    </form>
+    <br><br>
+
+    @RenderBody()
+
+    @*注脚*@
+    <br /><br /><br /><br /><br /><br /><br /><br />
+    <div class="ui vertical modal-footer segment" id="foot">
+        <div class="ui center aligned container">
+            <div class="ui section divider"></div>
+            <i class="copyright icon"></i>
+            <div class="ui horizontal small divided link list">
+                <a class="item">
+                    <font style="margin:auto;">
+                        同济大学 Tongji University 2019
+                    </font>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @*菜单用选中脚本*@
+    <script>
+        $('.ui.menu a.item').on('click', function () {
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+        $('.ui.dropdown').dropdown();
+        $('#search').sticky({
+            context: '#foot'
+        });
+        //更新个人中心
+        $.ajax({
+            url: "/Home/Indexx",
+            type: "post",
+            data: {},
+            success: function (data) {
+
+
+                document.getElementById("itemNum").innerHTML = data.itemNumber;
+                document.getElementById("userNickName").innerHTML = data.userNickName;
+                if (data.userLevel == 0) {
+                    document.getElementById('shopbtn').innerHTML = '申请店铺';
+                    document.getElementById('shopbtn').href = '/Shop/NewShop';
+                    $('#shopbtn').removeClass('active');
+                }
+                else {
+                    document.getElementById('shopbtn').innerHTML = '管理店铺';
+                    document.getElementById('shopbtn').href = '/ShopInfo/ShopInfo';
+                    $('#shopbtn').removeClass('active');
+                }
+            }
+        });
+
+
+
+
+        function sleep(numberMillis) {
+            var now = new Date();
+            var exitTime = now.getTime() + numberMillis;
+            while (true) {
+                now = new Date();
+                if (now.getTime() > exitTime)
+                    return;
+            }
+        }
+    </script>
+
+    <script>
+        var search_name = "商品"
+        $('#search-menu .item').on('click', function () {
+            search_name = this.innerHTML;
+        });
+        $('#search-button').on('click', function () {
+            if (search_name == "商品") {
+                document.getElementById("search-form").action = "/Search/ItemSearch";
+
+            }
+            else {
+                document.getElementById("search-form").action = "/Search/ShopSearch";
+            }
+        });
+    </script>
+    <script>
+        function standardPost(url, args, name) {
+            var form = $("<form method='post' type='hidden'></form>");
+            form.attr({ "action": url });
+            var input = $("<input type='hidden'>");
+            input.attr({ "name": name });
+            input.val(args);
+            form.append(input);
+            $("html").append(form);
+            form.submit();
+        }
+    </script>
+    <script>
+        function twoArgsPost(url, args1, name1, args2, name2) {
+            var form = $("<form method='post' type='hidden'></form>");
+            form.attr({ "action": url });
+            var input1 = $("<input type='hidden'>");
+            input1.attr({ "name": name1 });
+            input1.val(args1);
+            form.append(input1);
+            var input2 = $("<input type='hidden'>");
+            input2.attr({ "name": name2 });
+            input2.val(args2);
+            form.append(input2)
+            $("html").append(form);
+            form.submit();
+        }
+    </script>
+    <script>
+        function threeArgsPost(url, args1, name1, args2, name2, args3, name3) {
+            var form = $("<form method='post' type='hidden'></form>");
+            form.attr({ "action": url });
+            //第一个参数
+            var input1 = $("<input type='hidden'>");
+            input1.attr({ "name": name1 });
+            input1.val(args1);
+            form.append(input1);
+            //第二个参数
+            var input2 = $("<input type='hidden'>");
+            input2.attr({ "name": name2 });
+            input2.val(args2);
+            form.append(input2);
+            //第三个参数
+            var input3 = $("<input type='hidden'>");
+            input3.attr({ "name": name3 });
+            input3.val(args3);
+            form.append(input3);
+            $("html").append(form);
+            form.submit();
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

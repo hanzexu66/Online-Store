@@ -1,0 +1,132 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/Semantic-UI-CSS-master/semantic.min.css" rel="stylesheet" type="text/css">
+    @*<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>*@
+    <script src="~/js/jquery-3.1.1/jquery-3.1.1.min.js"></script>
+    <script src="~/css/Semantic-UI-CSS-master/semantic.min.js"></script>
+    
+    <script type="text/javascript">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+        {
+            <text>
+            $(document).ready(function() {
+                alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
+            });
+            </text>
+        }
+    </script>
+</head>
+
+<body>
+    <br /><br /><br /><br /><br /><br /><br /><br />
+    <div class="ui middle aligned center aligned grid" style="width:70%; margin:0 auto;">
+        <div style="width:40%;">
+            <img src="~/images/u=2187823274,2884198108&fm=26&gp=0.jpg" />
+        </div>
+        <div style="width:35%;" align="center">
+            <h1 class="ui header">
+                登录到你的账号
+            </h1>
+            <form class="ui large form" action="/Login/Login" method="post">
+                <div class="ui stacked segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input type="text" name="email" placeholder="电子邮箱" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            <input type="password" name="password" placeholder="密码" />
+                        </div>
+                    </div>
+                    <div class="ui fluid large teal submit button" onclick="log()">登录</div>
+                </div>
+                <div class=" ui error message"></div>
+            </form>
+            <div class="ui bottom attached warning message">
+                <i class="icon help"></i>
+                没有账号? <a href="/Login/Registe">点击这里立即注册</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.cookie = "keyName=NOBUG";
+
+        $(document).ready(function () {
+            $('.ui.form').form({
+                fields: {
+                    email: {
+                        identifier: 'email',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入你的邮箱'
+                            },
+                            {
+                                type: 'email',
+                                prompt: '请输入一个合法邮箱'
+                            },
+                            {
+                                type: 'maxLength[30]',
+                                prompt:'账号长度不能大于30位'
+                            }
+                        ]
+                    },
+                    password: {
+                        identifier: 'password',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入你的密码'
+                            },
+                            {
+                                type: 'minLength[6]',
+                                prompt: '密码长度不能小于6位'
+                            },
+                            {
+                                type: 'maxLength[20]',
+                                prompt: '密码长度不能大于20位'
+                            }
+                        ]
+                    }
+                }
+            });
+        });
+
+        function log() {
+
+        }
+    </script>
+
+    @*注脚*@
+    <br /><br /><br /><br /><br /><br /><br /><br />
+    <div class="ui vertical modal-footer segment">
+        <div class="ui center aligned container">
+            <div class="ui section divider"></div>
+            <i class="copyright icon"></i>
+            <div class="ui horizontal small divided link list">
+                <a class="item">
+                    <font style="margin:auto;">
+                        同济大学 Tongji University 2019
+                    </font>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

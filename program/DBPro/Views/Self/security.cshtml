@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewData["Title"] = "Security";
+}
+@model DBPro.Models.SecurityViewModel
+<div class="ui centered grid" align="center">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item" id="menu1" href="/Self/Self">个人信息 </a>
+            <a class="item active" id="menu2">安全设置 </a>
+            <a class="item" id="menu3" href="/Self/Address">收货地址 </a>
+            <a class="item" id="menu4" href="/Cart/Cart">购物车 </a>
+            <a class="item" id="menu5" href="/Collect/Collect">收藏夹 </a>
+        </div>
+    </div>
+    @*<div class="two wide column" hidden="hidden"></div>*@
+    <div class="ten wide column">
+        <form class="ui form" method="post" action="/Self/sendpassword" onsubmit="return verify();">
+            <div class="field">
+                <label>请输入旧密码</label>
+                <input type="password" name="oldpassword" id="op" placeholder="旧密码">
+            </div>
+            <div class="field">
+                <label>请输入新密码</label>
+                <input type="password" name="newpassword" id="np" placeholder="新密码">
+            </div>
+            <div class="field">
+                <label>请再次输入新密码</label>
+                <input type="password" name="renewpassword" placeholder="确认新密码">
+            </div>
+            <button class="ui teal button">保存</button>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                oldpassword: {
+                    identifier: 'oldpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入你的旧密码'
+                        }
+                    ]
+                },
+                newpassword: {
+                    identifier: 'newpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入你修改后的新密码'
+                        },
+                        {
+                            type: 'minLength[6]',
+                            prompt: '你的密码至少由6个字符组成'
+                        },
+                        {
+                            type: 'different[oldpassword]',
+                            prompt:'新密码和旧密码不能相同'
+                        },
+                        {
+                            type: 'maxLength[20]',
+                            prompt: '密码长度不能大于20位'
+                        }
+                    ]
+                },
+                renewpassword: {
+                    identifier: 'renewpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请再次输入你的新密码'
+                        },
+                        {
+                            type: 'match[newpassword]',
+                            prompt:'前后输入不一致'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>
+
+/<script>
+    function verify() {
+        var pw = @Model.password;
+        var p = document.getElementById("op").value;
+        if ($('.ui.form').form('is valid')) {
+            if (p == pw) {
+                alert("密码修改成功"); 
+                return true;
+            }
+            else {
+                alert("密码错误");
+                return false;
+            }
+        }
+    }
+</script>

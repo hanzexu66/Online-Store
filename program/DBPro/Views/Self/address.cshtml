@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewData["Title"] = "Address";
+}
+@model DBPro.Models.AdressViewModel;
+<div class="ui centered grid" align="center">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item" id="menu1" href="/Self/Self">个人信息 </a>
+            <a class="item" id="menu2" href="/Self/Security">安全设置 </a>
+            <a class="item active" id="menu3">收货地址 </a>
+            <a class="item" id="menu4" href="/Cart/Cart">购物车 </a>
+            <a class="item" id="menu5" href="/Collect/Collect">收藏夹 </a>
+        </div>
+    </div>
+    @*<div class="two wide column" hidden="hidden"></div>*@
+    <div class="ten wide column">
+        <div class="ui horizontal divider"><font size="4">新增收货地址</font></div>
+        <br />
+        <form class="ui form" method="post" action="/Self/Address" id="newaddress">
+            <div class="required fields">
+                <div class="field">
+                    <label>省</label>
+                    <input type="text" name="province" placeholder="province">
+                </div>
+                <div class="field">
+                    <label>市</label>
+                    <input type="text" name="city" placeholder="city">
+                </div>
+                <div class="field">
+                    <label>区</label>
+                    <input type="text" name="district" placeholder="district">
+                </div>
+                <div class="field">
+                    <label>街道</label>
+                    <input type="text" name="street" placeholder="street">
+                </div>
+            </div>
+            <div class="required field">
+                <label>详细地址</label>
+                <input type="text" name="detailaddress" placeholder="address">
+            </div>
+            <div class="required field">
+                <label>收件人姓名</label>
+                <input type="text" name="username" placeholder="your name">
+            </div>
+            <div class="required field">
+                <label>手机号码</label>
+                <input type="text" name="phonenumber" placeholder="your phone number">
+            </div>
+            <button class="ui teal button">保存</button>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="two wide column"></div>
+        <div class="ten wide centered column">
+            <div class="ui horizontal divider"><font size="4">已有收货地址</font></div>
+            <table class="ui celled table" id="addresstable">
+                <thead>
+                    <tr>
+                        <th>收件人姓名</th>
+                        <th>所在地区</th>
+                        <th>详细地址</th>
+                        <th>手机号码</th>
+                        <th>操作</th>
+                        <th>看不见</th>
+                    </tr>
+                </thead>
+                @{
+                    for (int i = 0; i < Model.name.Count(); ++i)
+                    {
+                        <tr>
+                            <td>@Model.name[i]</td>
+                            <td>@Model.province[i] @Model.city[i] @Model.district[i] @Model.street[i]</td>
+                            <td>@Model.detailAdress[i]</td>
+                            <td>@Model.phone[i]</td>
+                            <td>
+                                <div class="row">
+                                    <button class="ui teal button" id="updateaddress" name="upbutton">修改</button>
+                                    <form method="post" action="/Self/Daddress">
+                                        <button class="ui teal button" name="delete" id="deleteaddress">删除</button>'
+                                        <input type="text" name="rid" id="rid" hidden="hidden" value="@Model.rid[i]">
+                                    </form>
+                                </div>
+                            </td>
+                            <td>@Model.rid[i]</td>
+                        </tr>
+                    }
+                }
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="eight wide centered column">
+        <form class="ui form" method="post" action="/Self/Uaddress" id="moaddress" style="display:none" hidden="hidden">
+            <div class="required fields">
+                <div class="field">
+                    <label>省</label>
+                    <input type="text" name="province" id="province1">
+                </div>
+                <div class="field">
+                    <label>市</label>
+                    <input type="text" name="city" id="city1">
+                </div>
+                <div class="field">
+                    <label>区</label>
+                    <input type="text" name="district" id="district1">
+                </div>
+                <div class="field">
+                    <label>街道</label>
+                    <input type="text" name="street" id="street1">
+                </div>
+            </div>
+            <div class="required field">
+                <label>详细地址</label>
+                <input type="text" name="detailaddress" id="detailaddress1">
+            </div>
+            <div class="required field">
+                <label>收件人姓名</label>
+                <input type="text" name="username" id="username1">
+            </div>
+            <div class="required field">
+                <label>手机号码</label>
+                <input type="text" name="phonenumber" id="phonenumber1">
+            </div>
+            <div class="required field" hidden="hidden">
+                <label>rid</label>
+                <input type="text" name="rid" id="rid1">
+            </div>
+            <button class="ui teal button">保存</button>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+</div>
+    <script language=javascript>
+        $(document).ready(function () {
+            $('.ui.form').form({
+                fields: {
+                    province: {
+                        identifier: 'province',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入收件人的省份'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '省份长度不能大于10位'
+                            }
+                        ]
+                    },
+                    city: {
+                        identifier: 'city',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入收件人的城市'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '城市长度不能大于10位'
+                            }
+                        ]
+                    },
+                    district: {
+                        identifier: 'district',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入收件人所在区'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '区长度不能大于10位'
+                            }
+                        ]
+                    },
+                    street: {
+                        identifier: 'street',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入收件人所在街道'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '街道长度不能大于10位'
+                            }
+                        ]
+                    },
+                    detailaddress: {
+                        identifier: 'detailaddress',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入详细收货地址'
+                            },
+                            {
+                                type: 'maxLength[200]',
+                                prompt: '详细地址长度不能大于200位'
+                            }
+                        ]
+                    },
+                    username: {
+                        identifier: 'username',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入收件人姓名'
+                            }
+                        ]
+                    },
+                    phonenumber: {
+                        identifier: 'phonenumber',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入手机号码'
+                            },
+                            {
+                                type: 'decimal',
+                                prompt: '手机号码格式有误'
+                            },
+                            {
+                                type: 'exactLength[11]',
+                                prompt: '手机号码应该为11位'
+                            }
+                        ]
+                    }
+                }
+            });
+        });
+
+        $('#addresstable tr').find('td:eq(5)').hide();
+        $('#addresstable tr').find('th:eq(5)').hide();
+
+        $(document).on('click', '#updateaddress', function () {
+            //var code = $(this).parents("tr").find("td").eq(0).text();
+            $('#moaddress').show();
+            $("#privince1").attr("value", "");
+            $("#city1").attr("value", "");
+            $("#district1").attr("value", "");
+            $("#street1").attr("value", "");
+            $("#detailaddress1").attr("value", $(this).parents("tr").find("td").eq(2).text());
+            $("#username1").attr("value", $(this).parents("tr").find("td").eq(0).text());
+            $("#phonenumber1").attr("value", $(this).parents("tr").find("td").eq(3).text());
+            $("#rid1").attr("value", $(this).parents("tr").find("td").eq(5).text());
+        })
+    </script>

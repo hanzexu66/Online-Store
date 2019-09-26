@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Charge";
+}
+
+<div class="ui centered container" style="width:60%">
+    <div class="ui icon message">
+        <i class="gem icon"></i>
+        <div class="content">
+            <div class="header">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        充值中心
+                    </font>
+                </font>
+            </div>
+            <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">给你的钱包打打气！</font></font></p>
+        </div>
+    </div>
+</div>
+<br /><br /><br /><br />
+<div class="ui centered container" style="width:50%;">
+    <div class="centered row">
+        <div class="column" align="center">
+            <h1 class="ui header">
+                充值
+            </h1>
+        </div>
+    </div>
+    <div class="eight column centered row">
+        <div class="ui divider"></div>
+        <form class="ui form segment" >
+            <div class="field">
+                <label>充值金额</label>
+                <input placeholder="充值金额" name="money" type="number" id="money">
+            </div>
+            <div class="inline field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="terms">
+                    <label>我同意条款和条件</label>
+                </div>
+            </div>
+            <div align="center">
+                <div class="ui primary button" onclick="chargeback()">
+                    返回
+                </div>
+                <div class="ui primary submit button" onclick="charge()">
+                    确认充值
+                </div>
+            </div>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                充值成功
+            </font>
+        </font>
+    </div>
+</div>
+
+<script>
+    //将表单提交
+    function subm() {
+        $('form').submit(function () {
+            alert("submit");
+            return true;
+        });
+
+        window.history.back(-1);//返回到个人信息页面
+    }
+
+    //检验信息
+    function charge() {
+        if ($('.ui.form').form('is valid')) {
+            $('form').submit(function () {
+                return false;
+            });
+
+            $.ajax({
+                type: "post",
+                url: "/Self/Charge",
+                data: {
+                    money: document.getElementById("money").value
+                },
+                success: function (result) {
+                    if (result == 1) {
+                        $('.ui.basic.modal').modal('show');
+                        setTimeout(subm, 1000);
+                    }
+                    else if (result == 2) {
+                        alert("充值超过上限！");
+                    }
+                    else
+                        alert("充值失败！");
+                },
+                error: function (result) {
+                    alert("error");
+                }
+            });
+        }
+    }
+
+    //返回
+    function chargeback() {
+        window.history.back(-1);
+    }
+
+    //表单校验
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                money: {
+                    identifier: 'money',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入充值金额'
+                        },
+                        {
+                            type: 'number',
+                            prompt: '请输入正确的金额'
+                        },
+                        {
+                            type: 'integer[1..99999999]',
+                            prompt: '请输入正确的金额'
+                        }
+                    ]
+                },
+                terms: {
+                    identifier: 'terms',
+                    rules: [
+                        {
+                            type: 'checked',
+                            prompt: '你必须同意我们的条款才能充值'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

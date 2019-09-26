@@ -1,0 +1,194 @@
+﻿@{
+    ViewData["Title"] = "Home page";
+}
+@model DBPro.Models.HomeIndexViewModel
+<h1>@ViewData["Message"]</h1>
+<div class="ui grid container" style="height:500px">
+    <div class="one wide column"></div>
+    <div class="three wide column">
+        <div class="ui vertical pointing menu" style="text-align:center;">
+            <a class="item" id="electric">家用电器 </a>
+            <a class="item" id="smartphone">手机 </a>
+            <a class="item" id="computer">电脑 </a>
+            <a class="item" id="furniture">家具 </a>
+            <a class="item" id="clothing">服装 </a>
+            <a class="item" id="makeup">美妆 </a>
+            <a class="item" id="shoes">女鞋 </a>
+            <a class="item" id="car">汽车 </a>
+            <a class="item" id="food">食品 </a>
+            <a class="item" id="medicine">医药 </a>
+            <a class="item" id="book">图书 </a>
+            <a class="item" id="vproduct">虚拟商品 </a>
+        </div>
+    </div>
+    <div class="eleven wide column" style="position: relative">
+        <div class="container" style="height:350px;">
+            <div align="center">
+                <img name="obj" id="改成商品id，此id作为ItemID传入Details" class="ui medium rounde image" src=@Model.CycleItem[0].imagePath
+                     style="height:460px; width:730px;margin-left:20px;margin-top:10px">
+
+            </div>
+        </div>
+        <div class="container" style="height:50px">
+            <div align="center">
+                <div class="blue mini ui buttons" style="position: absolute;left:295px;bottom:25px">
+                    @{
+                        for (int i = 0; i < 5; i++)
+                        {
+                            <button id=@((i+1).ToString()) onmousemove="seePicture(this.id)" onmouseout="releasePicture(this.id)" class="ui inverted  basic button">@(i + 1)</button>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="ui grid container" style="height:45%">
+    <div class="one wide column"></div>
+    <div class="fourteen wide column" style="background-color:lightgrey">
+        <a class="ui teal ribbon label" style="width:10%; height:10%">
+            <font size="3">服装</font>
+        </a>
+        <div class="one wide column"></div>
+        <div class="ui four cards">
+            @{
+                for (int i = 0; i < 4&&i< Model.CostumeItem.Count(); ++i)
+                {
+            <div class="ui link card" style="height:290px" id=@(string.Format("Costume{0}",i))>
+                <div hidden>@Model.CostumeItem[i].itemID</div>
+                <div class="image">
+                    <img src=@Model.CostumeItem[i].imagePath style="height:245px;" />
+                </div>
+                <div class="extra">
+                    评分: <div class="ui star rating" data-rating=@Model.CostumeItem[i].itemScore data-max-rating="5"></div>
+                </div>
+            </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<div class="ui grid container" style="height:50%">
+    <div class="one wide column"></div>
+    <div class="fourteen wide column" style="background-color:lightgrey">
+        <a class="ui red ribbon label" style="width:10%; height:10%">
+            <font size="3">电脑数码</font>
+        </a>
+        <div class="ui four cards">
+            @{
+                for (int i = 0; i < 4&&i< Model.DigitItem.Count(); ++i)
+                {
+
+            <div class="ui link card" style="height:290px" id=@(string.Format("Digit{0}",i))>
+                <div hidden>@Model.DigitItem[i].itemID</div>
+                <div class="image">
+                    <img src=@Model.DigitItem[i].imagePath style="height:245px"/>
+                </div>
+                <div class="extra">
+                    评分: <div class="ui star rating" data-rating=@Model.DigitItem[i].itemScore data-max-rating="5"></div>
+                </div>
+            </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<div class="ui grid container" style="height:50%">
+    <div class="one wide column"></div>
+    <div class="fourteen wide column" style="background-color:lightgrey">
+        <a class="ui blue ribbon label" style="width:10%; height:10%">
+            <font size="3">居家用品</font>
+        </a>
+        <div class="ui four cards">
+            @{
+                for (int i = 0; i < 4&&i< Model.DailyItem.Count(); ++i)
+                {
+            <div class="ui link card" style="height:290px" id=@(string.Format("Daily{0}",i))>
+                <div hidden>@Model.DailyItem[i].itemID</div>
+                <div class="image">
+                    <img src=@Model.DailyItem[i].imagePath style="height:245px"/>
+                </div>
+                <div class="extra">
+                    评分: <div class="ui star rating" data-rating=@Model.DailyItem[i].itemScore data-max-rating="5"></div>
+                </div>
+            </div>
+                }
+            }
+
+
+        </div>
+    </div>
+</div>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating("disable");
+</script>
+<script language=javascript>
+    var curIndex = 0;
+    var timeInterval = 3000;
+    var isfocus = 0;
+    var arr = new Array();
+    arr[0] = "@Model.CycleItem[0].imagePath";
+    arr[1] = "@Model.CycleItem[1].imagePath";
+    arr[2] = "@Model.CycleItem[2].imagePath";
+    arr[3] = "@Model.CycleItem[3].imagePath";
+    arr[4] = "@Model.CycleItem[4].imagePath";
+    setInterval(changeImg, timeInterval);
+    function sleep_() {
+        obj.src = arr[curIndex];
+        $('.ui.medium.rounded.bordered.image').transition('fade left');
+    }
+    function changeImg() {
+        if (isfocus == 0) {
+            var obj = document.getElementsByName("obj")[0];
+            $('.ui.medium.rounded.bordered.image').transition('fade right');
+            if (curIndex == arr.length - 1) {
+                curIndex = 0;
+            }
+            else {
+                curIndex += 1;
+            }
+
+            setTimeout(sleep_, 320);
+        }
+    }
+</script>
+<script>
+    function seePicture(id) {
+        var obj = document.getElementsByName("obj")[0];
+        isfocus = 1;
+        obj.src = arr[id - 1];
+        curIndex = id - 1;
+    }
+    function releasePicture(id) {
+
+        isfocus = 0;
+
+    }
+
+</script>
+@*7.9*@
+<script>
+    $('.ui.link.card').on('click', function () {
+        var i_id = document.getElementById(this.id).getElementsByTagName("div")[0].innerHTML;
+
+        standardPost("/Goods/Details", i_id,"i_id");
+    });
+    $('.ui.medium.rounded.bordered.image').on('click', function () {
+        var i_id = document.getElementById(this.id).getElementsByTagName("div")[0].innerHTML;
+        standardPost("/Goods/Details", i_id, "i_id");
+    });
+    $('.ui.vertical.pointing.menu a.item').on('click', function () {
+        standardPost("/Search/ItemSearch", this.id, "type");
+    });
+</script>

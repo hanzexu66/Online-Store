@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Report";
+}
+@model DBPro.Models.ReportViewModel;
+<div class="ui centered container" style="width:60%">
+    <form class="ui large form">
+        <div class="field">
+            <label>
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        请输入举报原因
+                    </font>
+                </font>
+            </label>
+            <input name="itemID" readonly  value="@Model.itemID" hidden="hidden"/>
+            <textarea name="reason" placeholder="举报原因" style="margin:auto" id="reportReason"></textarea>
+        </div>
+        <div class="ui centered container" align="center">
+            <a class="ui primary button" onclick="back()">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        返回
+                    </font>
+                </font>
+            </a>
+            <div class="ui primary button" onclick="check()">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        提交
+                    </font>
+                </font>
+            </div>
+        </div>
+        <br />
+        <div class=" ui error message"></div>
+    </form>
+    <div class="ui bottom attached warning message" align="center">
+        <i class="exclamation icon"></i>
+        杜绝恶意举报，从你我做起！
+    </div>
+</div>
+
+<div class="ui basic modal" id="suretosubm">
+    <div class="ui icon header">
+        <i class="exclamation icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                注意
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">确定要提交举报信息？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            我改变主意了
+        </div>
+        <div class="ui green ok inverted button" onclick="send()">
+            <i class="checkmark icon"></i>
+            是的，我确定
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal" id="reportsuccess">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                提交成功
+            </font>
+        </font>
+    </div>
+</div>
+
+<script>
+
+    //提交信息后
+    function send() {
+        $('#reportsuccess').modal('show');
+
+        setTimeout(subm, 3000);
+    }
+
+    //将表单提交
+    function subm(){
+        //$('form').submit(function () {
+        //    return true;
+        //});
+        var fileInput = document.getElementById("reportReason");
+        //window.history.back(-1);//返回到商品详情页面
+        $.ajax({
+            type: "post",
+            url: "/Report/addReport",
+            data: {
+                itemID: "@Model.itemID",
+                reason: fileInput.value
+            },
+            success: function (result) {
+                standardPost("/Goods/Details",result, "i_id");
+            }
+        });
+    }
+
+    //检验信息
+    function check() {
+        if ($('.ui.form').form('is valid')) {
+            $('form').submit(function () {
+                return false;
+            });
+            $('#suretosubm').modal('show');
+        }
+    }
+
+    //返回
+    function back() {
+        window.history.back(-1);
+    }
+
+    //表单校验
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                reason: {
+                    identifier: 'reason',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入举报原因'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+</script>

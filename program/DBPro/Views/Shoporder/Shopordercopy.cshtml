@@ -1,0 +1,441 @@
+﻿@{
+    ViewData["Title"] = "Order";
+}
+
+@model List<OrderViewModel>
+
+<div class="ui  grid container">
+
+    <div class="two wide column">
+
+        <div class="ui massive vertical menu">
+            <div class="item">
+                <div class="header">店铺订单</div>
+                <div class="menu">
+                    <a class="item active" id="menu1">全部订单</a>
+                    <a class="item a" id="menu2">待付款订单</a>
+                    <a class="item" id="menu3">待发货订单</a>
+                    <a class="item a" id="menu4">待收货订单</a>
+                    <a class="item a" id="menu6">已完成订单</a>
+                    <a class="item" id="menu7">待退款订单</a>
+                    <a class="item a" id="menu8">已退款订单</a>
+                </div>
+            </div>
+        </div>
+
+        
+        <div align="center">
+            <a tabindex="0" class="ui animated fade button" href="/shopinfo/shopinfo">
+                <div class="visible content">
+                    <i class="left arrow icon"></i>
+                </div>
+                <div class="hidden content">返回 </div>
+            </a>
+        </div>
+
+    </div>
+    <div class="twelve wide column">
+        <div class="ui red segment" id="OrderList" style="display:block">
+            @{
+                for (int i = 0; i < Model.Count(); i++)//将3的位置改为从后端提取的订单数量
+                {
+                    int state = Model[i].orderState;
+
+                    if (state == 1)//状态为待发货的订单
+                    {
+
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                            <div class="ui hiden grid">
+                                <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                    <div class="four wide hidden column">
+                                        <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                    </div>
+                                    <div class="six wide hidden column">
+                                        @Model[i].LSItem[j].itemName
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                    </div>
+                                </div>
+                            </div>
+                                }
+                            }              
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="ten wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button" id="send">发货</button>
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a" id="@Model[i].orderID">查看订单</button>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    if (state == 2)//状态为待付款的订单
+                    {
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                                    <div class="ui hiden grid">
+                                        <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                            <div class="four wide hidden column">
+                                                <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                            </div>
+                                            <div class="six wide hidden column">
+                                                @Model[i].LSItem[j].itemName
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="thirteen wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a" id="@Model[i].orderID">查看订单</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    if (state == 0)//状态为待退款的订单
+                    {
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                                    <div class="ui hiden grid">
+                                        <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                            <div class="four wide hidden column">
+                                                <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                            </div>
+                                            <div class="six wide hidden column">
+                                                @Model[i].LSItem[j].itemName
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="ten wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button" id="refund">同意退款</button>
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a" id="@Model[i].orderID">查看订单</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    if (state == 3)//状态为已退款的订单
+                    {
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                                    <div class="ui hiden grid">
+                                        <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                            <div class="four wide hidden column">
+                                                <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                            </div>
+                                            <div class="six wide hidden column">
+                                                @Model[i].LSItem[j].itemName
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="thirteen wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a" id="@Model[i].orderID">查看订单</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    if (state == 4)//状态为待收货的订单
+                    {
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                                    <div class="ui hiden grid">
+                                        <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                            <div class="four wide hidden column">
+                                                <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                            </div>
+                                            <div class="six wide hidden column">
+                                                @Model[i].LSItem[j].itemName
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="thirteen wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a">查看订单</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    if (state == 5)//状态为已完成的订单
+                    {
+                        <div class="ui red segment" id=@string.Format("Order{0:D3}",i)>
+                            <div class="ui grid">
+                                <div class="row">
+                                    <a class="ui red image label">
+                                        <i class="clipboard outline icon"></i>订单状态 <div class="detail">@state</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ui grid" style="background-color:#f7f7f7;">
+                                <div class="row">
+                                    <div class="fourteen wide  column">
+                                        <a style="color:#000000;">@Model[i].orderID</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @{
+                                @for (int j = 0; j < Model[i].LSItem.Count(); ++j)
+                                {
+                                    <div class="ui hiden grid">
+                                        <div class="row" id=@string.Format("goods{0:D3}{1:D3}",i,j)>
+                                            <div class="four wide hidden column">
+                                                <img class="ui small image" src=@Model[i].LSItem[j].imagePath>
+                                            </div>
+                                            <div class="six wide hidden column">
+                                                @Model[i].LSItem[j].itemName
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>￥</fond><fond>@Model[i].LSItem[j].itemPrice</fond>
+                                            </div>
+                                            <div class="three wide hidden column">
+                                                <fond>×</fond><fond>@Model[i].LSItem[j].itemAmount</fond>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="ui hiden grid">
+                                <div class="row" style="background-color:#f7f7f7;">
+                                    <div class="thirteen wide hidden column">
+                                    </div>
+                                    <div class="three wide hidden column">
+                                        <button class="ui button a" id="@Model[i].orderID">查看订单</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+            }
+
+
+
+
+        </div>
+    </div>
+
+    <div class="ui basic modal" id="moo">
+        <div class="content" align="center">
+            <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">确定发货？</font></font></p>
+        </div>
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                取消
+            </div>
+            <a class="ui green ok inverted button" href="/Shoporder/index" onclick="morder()">
+                <i class="checkmark icon"></i>
+                是的
+            </a>
+        </div>
+    </div>
+
+    <div class="ui basic modal" id="mot">
+        <div class="content" align="center">
+            <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">确定退款？</font></font></p>
+        </div>
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                取消
+            </div>
+            <a class="ui green ok inverted button" href="/Shoporder/index" onclick="morder()">
+                <i class="checkmark icon"></i>
+                是的
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $('#menu1').on('click', function () {
+        $('#Order002').show();
+        $('#Order001').show();
+        $('#Order003').show();
+    })
+
+    $('#menu3').on('click', function () {
+        $('#Order001').show();
+        $('#Order002').hide();
+        $('#Order003').hide();
+    })
+
+    $('#menu7').on('click', function () {
+        $('#Order003').show();
+        $('#Order002').hide();
+        $('#Order001').hide();
+    })
+
+    $('#send').on('click', function () {
+        $('#moo').modal('show'); 
+        
+    })
+
+    $('#refund').on('click', function () {
+        $('#mot').modal('show');
+    })
+
+    $('.ui.button.a').on('click', function () {
+       
+        // var x = $(this).parent().parent().parent().parent().attr('id');
+        var id = this.id;
+        //alert(this.id);
+        standardPost("/Shoporder/detail", id, 'o_id');
+        
+    })
+
+</script>

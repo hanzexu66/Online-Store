@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "ShopDetails";
+}
+@model ShopDetailsViewModel
+@*店铺信息*@
+<div class="ui grid container">
+    <div class="sixteen wide column">
+        <div class="ui segment">
+            @*店铺名字与图片*@
+            <div class="ui header">
+                <img src=@Model.shop.imagePath class="ui small circular image" style="width:55px;height:55px;">
+                <div class="content">
+                    <a>@Model.shop.shopName</a>
+                </div>
+                @*收藏按键*@
+                <div class="ui right floated header">
+                    <div class="tiny ui vertical animated right floated button" tabindex="0" onclick="love()">
+                        <div class="visible content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    收藏
+                                </font>
+                            </font>
+                        </div>
+                        <div class="hidden content">
+                            <div> </div>
+                            <i class="heart icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*店铺简介*@
+            <p>@Model.shop.shopIntroduction</p>
+            @*店铺评分*@
+            <div class="ui right floated header">
+                评分：<div class="ui star rating" data-rating=@Model.shop.favorableRate data-max-rating="5"></div>
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+@*店铺商品*@
+<div class="ui grid container">
+    <div class="sixteen wide column">
+        <div class="ui segment">
+            @*店铺标题与店内搜索*@
+            <div class="ui top attached tabular menu">
+                <a class="item active">店铺商品 </a>
+                <div class="right menu">
+                    <div class="item">
+                        <div class="ui transparent icon input">
+                            <input type="text" placeholder="店内搜索商品">
+                            <i class="search link icon" id="sss"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*商品信息*@
+            <div class="ui bottom attached segment">
+                @*商品详细与搜索类似*@
+                <div class="ui grid">
+                    <div class="three wide column">
+                        <div class="ui floating dropdown labeled icon button">
+                            <i class="filter icon"></i>
+                            <span class="text">分类</span>
+                            <div class="menu">
+                                <div class="ui icon search input">
+                                    <i class="search icon"></i>
+                                    <input type="text" placeholder="Search tags...">
+                                </div>
+                                <div class="divider"></div>
+                                <div class="header"><i class="tags icon"></i> 标签 </div>
+                                <div class="scrolling menu">
+                                    <div class="item">
+                                        <div class="ui red empty circular label"></div>家用电器
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui blue empty circular label"></div>家具
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui black empty circular label"></div>服装
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui purple empty circular label"></div>手表
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui orange empty circular label"></div>数码电器
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui empty circular label"></div>药品
+                                    </div>
+                                    <div class="item">
+                                        <div class="ui yellow empty circular label"></div>食品
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ten wide column"></div>
+                    <div class="three wide column">
+                        <div class="ui menu" style="margin-left:0%">
+                            <a class="browse item">销量<i class="dropdown icon"></i> </a>
+                            <div class="ui popup bottom left transition hidden" style="width:60%">
+                                <a class="item">销量从低到高</a>
+                                <a class="item">销量从高到低</a>
+                            </div>
+                            <a class="browse item">价格<i class="dropdown icon"></i> </a>
+                            <div class="ui popup bottom left transition hidden" style="width:60%">
+                                <a class="item">价格从低到高</a>
+                                <a class="item">价格从高到低</a>
+                            </div>
+                        </div>
+                    </div>
+                    @*商品*@
+                    @{ 
+                        for(int i=0;i<(Model.shop.LSItem.Count()+3)/4;++i)
+                        {
+                    <div class="ui grid container" style="height:45%">
+                        <div class="one wide column"></div>
+                        <div class="fourteen wide column">
+                            <div class="ui four cards">
+                                @{
+                                    for (int j = i * 4; j < (i + 1) * 4 && j < Model.shop.LSItem.Count(); ++j)
+                                    {
+                                        <div class="ui link card" id="@Model.shop.LSItem[j].itemID">
+                                            <div class="image">
+                                                <img src=@Model.shop.LSItem[j].imagePath style="height:190px" />
+                                            </div>
+                                            <div class="content">
+                                                <div class="row">
+                                                    <div class="header">@Model.shop.LSItem[j].itemName</div>
+                                                </div>
+                                                <div class="row" style="margin-top:5px">
+                                                    <h4>
+                                                        <i class="yen sign icon"></i>&nbsp;&nbsp;@Model.shop.LSItem[j].itemPrice
+                                                    </h4>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                        }
+                    }
+                    
+
+                    <div><br></div>
+                    @*页数*@
+                    <div class="ui centered container" align="center">
+                        <div class="ui pagination menu" id="page">
+                            <a class="item active" id="1">1</a>
+                            <a class="item">2</a>
+                            <a class="item">3</a>
+                            <a class="item">4</a>
+                        </div>
+                    </div>
+                    <div><br></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*点击收藏后的二级页面*@
+<div class="ui basic modal" id="2">
+    <div class="ui icon header">
+        <i class="heart icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                收藏
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是否加入收藏夹？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            不必了
+        </div>
+        <div class="ui green ok inverted button" onclick="like()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('.ui.rating')
+        .rating()
+        .rating('disable')
+        ;
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating("disable");
+    $('.ui .menu .browse')
+        .popup({
+            //inline: true,
+            //hoverable: true,
+            position: 'bottom left',
+            delay: {
+                show: 300,
+                hide: 800
+            }
+        })
+        ;
+    $('#page a.item').on('click', function () {
+        var page = this.innerHTML;
+        console.log(page);
+        switch (page) {
+            case "1": console.log("a"); break;
+        }
+    });
+    function love() {
+        $('#2').modal('show');
+    }
+
+    $('#sss').on('click', function () {
+        console.log("aaa");
+    });
+    function like() {
+        var sid =@Model.shop.shopID
+        $.ajax({
+            type: "post",
+                url: "/Collect/AddShopToCollection",
+            data: {
+                s_id: sid
+            },
+            success: function (result) {
+                alert(result)
+            },
+            error: function (result) {
+                alert(result)
+            }
+        });
+    }
+
+    $('.ui.link.card').on('click', function () {
+        standardPost("/Goods/Details", this.id, "i_id");
+    });
+</script>
+
+

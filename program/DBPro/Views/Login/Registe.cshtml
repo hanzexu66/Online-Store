@@ -1,0 +1,219 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Registe";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/Semantic-UI-CSS-master/semantic.min.css" rel="stylesheet" type="text/css">
+    @*<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>*@
+    <script src="~/js/jquery-3.1.1/jquery-3.1.1.min.js"></script>
+    <script src="~/css/Semantic-UI-CSS-master/semantic.min.js"></script>
+</head>
+
+<body>
+    <div class="ui centered container" style="width:60%">
+        <div class="ui icon message">
+            <i class="notched circle loading icon"></i>
+            <div class="content">
+                <div class="header">
+                    <font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit;">
+                            龟龟购物网站
+                        </font>
+                    </font>
+                </div>
+                <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">给你最棒的购物体验！</font></font></p>
+            </div>
+        </div>
+    </div>
+    <br /><br /><br /><br />
+    <div class="ui centered container" style="width:50%;">
+        <div class="centered row">
+            <div class="column" align="center">
+                <h1 class="ui header">
+                    注册新账号
+                </h1>
+            </div>
+        </div>
+        <div class="eight column centered row">
+            <div class="ui horizontal divider">请填写以下信息</div>
+            <form class="ui form segment" action="/Login/Registe" method="post" onsubmit="registe()">
+                <div class="two fields">
+                    <div class="field">
+                        <label>姓名</label>
+                        <input placeholder="姓名" name="name" type="text">
+                    </div>
+                    <div class="field">
+                        <label>性别</label>
+                        <select class="ui dropdown" name="gender">
+                            <option value="">Gender</option>
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>邮箱（账号）</label>
+                        <input placeholder="邮箱地址" name="email" type="text">
+                    </div>
+                    <div class="field">
+                        <label>密码</label>
+                        <input type="password" name="password">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>昵称</label>
+                    <input type="text" name="nickname">
+                </div>
+                <div class="inline field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="terms">
+                        <label>我同意条款和条件</label>
+                    </div>
+                </div>
+                <div align="center">
+                    <div class="ui primary submit button">
+                        确认注册
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+        <div class="ui bottom attached warning message">
+            <i class="icon help"></i>
+            已经注册过了？ <a href="/Login/Login">点击这里登录！</a>
+        </div>
+    </div>
+
+    <div class="ui basic modal">
+        <div class="ui icon header">
+            <i class="check icon"></i><font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">
+                    注册成功
+                </font>
+            </font>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.ui.form').form({
+                fields: {
+                    name: {
+                        identifier: 'name',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入你的姓名'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '姓名应该少于10个字符'
+                            }
+                        ]
+                    },
+                    gender: {
+                        identifier: 'gender',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请选择你的性别'
+                            }
+                        ]
+                    },
+                    email: {
+                        identifier: 'email',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入你的电子邮箱地址'
+                            },
+                            {
+                                type: 'email',
+                                prompt: '请输入一个合法的电子邮箱地址'
+                            },
+                            {
+                                type: 'maxLength[30]',
+                                prompt: '你的邮箱应该少于30个字符'
+                            }
+                        ]
+                    },
+                    password: {
+                        identifier: 'password',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请设置账号密码'
+                            },
+                            {
+                                type: 'minLength[6]',
+                                prompt: '你的密码至少由6个字符组成'
+                            },
+                            {
+                                type: 'maxLength[20]',
+                                prompt: '你的密码应该少于20个字符'
+                            }
+                        ]
+                    },
+                    nickname: {
+                        identifier: 'nickname',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '请输入昵称'
+                            },
+                            {
+                                type: 'maxLength[10]',
+                                prompt: '昵称应该少于10个字符'
+                            }
+                        ]
+                    },
+                    terms: {
+                        identifier: 'terms',
+                        rules: [
+                            {
+                                type: 'checked',
+                                prompt: '你必须同意我们的条款才能注册账号'
+                            }
+                        ]
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $('.ui.dropdown').dropdown();
+
+        function registe() {
+            if ($('.ui.form').form('is valid')) {
+                $('.ui.basic.modal').modal('show');
+            }
+        }
+    </script>
+
+    @*注脚*@
+    <div class="ui vertical modal-footer segment">
+        <div class="ui center aligned container">
+            <div class="ui section divider"></div>
+            <i class="copyright icon"></i>
+            <div class="ui horizontal small divided link list">
+                <a class="item">
+                    <font style="margin:auto;">
+                        同济大学 Tongji University 2019
+                    </font>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

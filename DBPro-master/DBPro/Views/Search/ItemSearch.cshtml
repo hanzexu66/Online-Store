@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "ItemSearch";
+}
+@model SearchViewModel
+<div class="ui grid">
+    <div class="three wide column"></div>
+    <div class="four wide column">
+        <div class="ui floating dropdown labeled icon button">
+            <i class="filter icon"></i>
+            <span class="text">分类</span>
+            <div class="menu">
+                <div class="ui icon search input">
+                    <i class="search icon"></i>
+                    <input type="text" placeholder="Search tags...">
+                </div>
+                <div class="divider"></div>
+                <div class="header"><i class="tags icon"></i> 标签 </div>
+                <div class="scrolling menu">
+                    <div class="item">
+                        <div class="ui red empty circular label"></div>家用电器
+                    </div>
+                    <div class="item">
+                        <div class="ui blue empty circular label"></div>家具
+                    </div>
+                    <div class="item">
+                        <div class="ui black empty circular label"></div>服装
+                    </div>
+                    <div class="item">
+                        <div class="ui purple empty circular label"></div>手表
+                    </div>
+                    <div class="item">
+                        <div class="ui orange empty circular label"></div>数码电器
+                    </div>
+                    <div class="item">
+                        <div class="ui empty circular label"></div>药品
+                    </div>
+                    <div class="item">
+                        <div class="ui yellow empty circular label"></div>食品
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="three wide column"></div>
+    <div class="three wide column">
+        <div class="ui menu" style="margin-left:30%">
+            <a class="browse item">销量<i class="dropdown icon"></i> </a>
+            <div class="ui popup bottom left transition hidden" style="width:60%">
+                <a class="item" onclick="SortScoreUp()">销量从低到高</a>
+                <a class="item" onclick="SortScoreDown()">销量从高到低</a>
+            </div>
+            <a class="browse item">价格<i class="dropdown icon"></i> </a>
+            <div class="ui popup bottom left transition hidden" style="width:60%">
+                <a class="item" onclick="SortPriceUp()">价格从低到高</a>
+                <a class="item" onclick="SortPriceDown()">价格从高到低</a>
+            </div>
+        </div>
+    </div>
+</div>
+<h4 class="ui horizontal divider header"><i class="tag icon"></i> 搜索结果 </h4>
+<br />
+
+@{ 
+    for(int j=0;j< (@Model.LSItem.Count()+3)/4;++j)
+    {
+<div class="ui grid container" style="height:45%">
+    <div class="one wide column"></div>
+    <div class="fourteen wide column">
+        <div class="ui four cards">
+            @{
+                for (int i = j*4; i < @Model.LSItem.Count() && i < (j+1)*4; ++i)
+                {
+                    <div class="ui link card" onmousedown="clickCard(this.id)" id=@Model.LSItem[i].itemID>
+                        <div class="image">
+                            <img src=@Model.LSItem[i].imagePath style="height:190px" />
+                        </div>
+                        <div class="content">
+                            <div class="row">
+                                <div class="header">@Model.LSItem[i].itemName</div>
+                            </div>
+                            <div class="row" style="margin-top:5px">
+                                <h4>
+                                    <i class="yen sign icon"></i>&nbsp;&nbsp;@Model.LSItem[i].itemPrice
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="extra content">
+                            <i class="home blue link icon" onmousemove="deleteFunc()" onmouseout="addFunc()" id=@Model.LSItem[i].shopID></i>&nbsp;&nbsp;&nbsp;@Model.LSItem[i].shopName
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+    }
+}
+
+
+
+@*7.8修改*@
+<div class="ui grid container">
+    <div class="five wide column"></div>
+    <div class="six wide column" style="text-align:center">
+        <i class="large chevron left link icon"></i>
+        <b><font size="3">1/4</font></b>
+        <i class="large chevron right link icon"></i>
+    </div>
+    <form method="post" class="four wide column" style="text-align:right">
+        <b>
+            <font size="3">
+                第
+                <div class="ui input mini focus">
+                    <input type="text" value="1" style="width:41px;height:28px">
+                </div>
+                页
+            </font>
+        </b>
+        <button type="submit" class="ui tiny compact button">GO!</button>
+    </form>
+</div>
+<script>
+    function SortScoreDown() {
+        standardPost("/Search/ItemSearch", 0, "sortType");
+    }
+    function SortScoreUp() {
+        standardPost("/Search/ItemSearch", 1, "sortType");
+    }
+    function SortPriceUp() {
+        standardPost("/Search/ItemSearch", 3, "sortType");
+    }
+    function SortPriceDown() {
+        standardPost("/Search/ItemSearch", 2, "sortType");
+    }
+</script>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating("disable");
+    $('.ui .menu .browse')
+        .popup({
+            //inline: true,
+            //hoverable: true,
+            position: 'bottom left',
+            delay: {
+                show: 300,
+                hide: 800
+            }
+        })
+        ;
+    //不用
+    //$('#page a.item').on('click', function () {
+    //    var page = this.innerHTML;
+    //    console.log(page);
+    //    switch (page) {
+    //        case "1": console.log("a"); break;
+    //    }
+    //});
+</script>
+@*跳转//7.8修改*@
+<script>
+    //$('.ui.link.card').on('click', function () {
+    //    //alert(this.id);
+    //    standardPost("/Goods/Details", this.id, "i_id");
+    //});
+
+    //跳转到对应店铺页面
+    $('.home').on('click', function () {
+       // alert(this.id);
+        standardPost("/Shops/ShopDetails", this.id, "s_id");
+    });
+    //跳转到商品页面
+    function clickCard(id) {
+       // alert(id);
+        standardPost("/Goods/Details", id, "i_id");
+    }
+    function deleteFunc() {
+        $('.ui.link.card').removeAttr('onmousedown');
+    }
+    function addFunc() {
+        $('.ui.link.card').attr({ "onmousedown": "clickCard(this.id)"});
+    }
+</script>

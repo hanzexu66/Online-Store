@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "Pay";
+}
+@model PayViewModel
+<center>
+    <div class="ui selection dropdown" width="500">
+        <input type="hidden" name="gender">
+        <i class="dropdown icon"></i>
+        <div class="default text">请选择收货地址</div>
+        <div class="menu">
+            @{ 
+                for(int i=0;i<Model.LReceive.Count;++i)
+                {
+            <div class="item" id="@Model.LReceive[i].ReceiveID">@Model.LReceive[i].province @Model.LReceive[i].city @Model.LReceive[i].district @Model.LReceive[i].street @Model.LReceive[i].detailAdress</div>
+                }
+            }
+        </div>
+    </div>
+</center>
+<br />
+<br />
+<br />
+<div class="ui centered container" align="center" style="width:80%;">
+    <div class="ui horizontal divider">
+        确认订单信息
+    </div>
+</div>
+
+<div class="ui centered container" align="center" style="width:65%;">
+    <table class="ui table" width="600" align=center>
+        <thead>
+            <tr>
+                <th>商品</th>
+                <th>数量</th>
+                <th>单价</th>
+                <th>总价</th>
+            </tr>
+        </thead>
+        @{ 
+            double totalPrice = 0;
+            for(int i=0;i<Model.LItem.Count();++i)
+            {
+                totalPrice += Model.Lamount[i] * Model.LItem[i].itemPrice;
+        <tbody id="@Model.LItem[i].itemID">
+            <tr>
+                <td>
+                    <h4 class="ui image header">
+                        <img src=@Model.LItem[i].imagePath class="ui mini rounded image">@Model.LItem[i].itemName
+                    </h4>
+                </td>
+                <td name="amount" id="@Model.Lamount[i]">
+                    @Model.Lamount[i]
+                </td>
+                <td>
+                    @Model.LItem[i].itemPrice
+                </td>
+                <td>
+                    @string.Format("{0}", Model.Lamount[i]* Model.LItem[i].itemPrice)
+                </td>
+            </tr>
+
+        </tbody>
+            }
+
+        }
+        
+    </table>
+</div>
+
+<div class="ui basic modal" id="payok">
+    <div class="ui icon header">
+        <i class="shop icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                付款
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">你确定要购买这些商品吗？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            再想想
+        </div>
+        <div class="ui green ok inverted button" onclick="payinterface()">
+            <i class="checkmark icon"></i>
+            是的，就是这些
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal" id="payComplete">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                支付成功
+            </font>
+        </font>
+    </div>
+    <div class="actions">
+        <a class="ui green ok inverted button" onclick="complete()">
+            <i class="checkmark icon"></i>
+            好的
+        </a>
+    </div>
+</div>
+
+<div align="center" style="position:relative;top:10px">
+    <div class="ui label" id="@totalPrice" name="totalPrice"> 合计：@totalPrice </div>
+</div>
+<p></p>
+<div align="center" style="position:relative;top:10px">
+    <button class="ui primary button" onclick="myFunction()">付款</button>
+</div>
+
+<script>
+    //获取收货地址
+    var JSreceiveID;
+    $('.item').on("click", function () {
+        JSreceiveID = this.id;
+    })
+</script>
+<script>
+
+    //点击付款后地响应
+    function myFunction() {
+        $('#payok').modal('show'); 
+    }
+
+    ////确认付款后的操作
+    //function payinterface() {
+    //    $('#2').modal('show'); 
+
+    //}
+
+    //确认付款后的操作
+    var o_id;
+    function payinterface() {
+        var itemIDs = new Array();
+        var amounts = new Array();
+        var JStotal = document.getElementsByName("totalPrice")[0].id;
+        //alert(JStotal);
+        var amountElements = document.getElementsByName("amount");
+        for (var i = 0; i <@Model.LItem.Count(); i++)
+        {
+            itemIDs.push(amountElements[i].parentNode.parentNode.id);
+            amounts.push(amountElements[i].id);
+        }
+        $.ajax({
+            type: "post",
+            url: "/Pay/payment",
+            data: {
+                i_ids: itemIDs,
+                amounts: amounts,
+                receiveID: JSreceiveID,
+                total: JStotal
+            },
+            success: function (result) {
+                
+                //根据result做指定操作
+                if (result[0] == "创建成功") {
+                    //o_id = result[1];
+                    showSucceed();
+                }
+                else {
+                    alert(result[0]);
+                }
+            }
+        });
+    }
+    function showSucceed() {
+        $('#payComplete').modal('show'); 
+    }
+    function complete() {
+        //alert("跳转")
+        //这里跳转
+        standardPost("/Order/Order", o_id, "o_id");
+
+    }
+
+</script>

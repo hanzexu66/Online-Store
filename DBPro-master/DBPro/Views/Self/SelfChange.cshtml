@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "SelfChange";
+}
+<br /><br />
+<div class="ui centered container" align="center" style="width:50%;">
+    <div class="centered row">
+        <div class="column" align="center">
+            <h1 class="ui header">
+                修改个人信息
+            </h1>
+        </div>
+    </div>
+    <div class="eight column row">
+        <div class="ui horizontal divider">请修改需要修改的信息</div>
+        <form class="ui form segment" method="post" action="/Self/SelfChange" onsubmit="cfm()">
+            <div class="two fields">
+                <div class="field">
+                    <label style="text-align:left">姓名</label>
+                    <input placeholder="姓名" name="name" type="text">
+                </div>
+                <div class="field">
+                    <label style="text-align:left">性别</label>
+                    <select class="ui dropdown" name="gender">
+                        <option value="">性别</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label style="text-align:left">昵称</label>
+                <input type="text" name="nickname">
+            </div>
+            <div align="center">
+                <div class="ui primary submit button">
+                    确认修改
+                </div>
+            </div>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                修改成功
+            </font>
+        </font>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                name: {
+                    identifier: 'name',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入你的姓名'
+                        }
+                    ]
+                },
+                gender: {
+                    identifier: 'gender',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请选择你的性别'
+                        }
+                    ]
+                },
+                phone: {
+                    identifier: 'phone',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入手机号码'
+                        },
+                        {
+                            type: 'number',
+                            prompt: '请输入一个合法的手机号码'
+                        }
+                    ]
+                },
+                nickname: {
+                    identifier: 'nickname',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入昵称'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+
+
+    function cfm() {
+        if ($('.ui.form').form('is valid')) {
+            $('form').submit(function () {
+                return false;
+            });
+
+            $('.ui.basic.modal').modal('show');
+
+            setTimeout(subm, 3000);
+        }
+    }
+
+    function subm() {
+        $('form').submit(function () {
+            return true;
+        });
+
+        window.history.back(-1);
+    }
+
+</script>

@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Order";
+}
+@model List<OrderViewModel>
+
+
+<div class="ui  grid container">
+
+    <div class="two wide column">
+        <div class="ui massive vertical menu">
+            <div class="item">
+                <div class="header">我的订单</div>
+                <div class="menu">
+                    <a class="active item" id="All" onclick="ChangeOrderView(this.id)">全部订单</a>
+                    <a class="item" id="WaitDeliver" onclick="ChangeOrderView(this.id)">待发货</a>
+                    <a class="item" id="WaitReceive" onclick="ChangeOrderView(this.id)">待收货</a>
+                    <a class="item" id="WaitPay" onclick="ChangeOrderView(this.id)">待付款</a>
+                    <a class="item" id="WaitComment" onclick="ChangeOrderView(this.id)">待评价</a>
+                    <a class="item" id="Finish" onclick="ChangeOrderView(this.id)">已完成</a>
+                    <a class="item" id="WaitRefund" onclick="ChangeOrderView(this.id)">待退款</a>
+                    <a class="item" id="Refunded" onclick="ChangeOrderView(this.id)">已退款</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="twelve wide column">
+        <div class="ui red segment" id="OrderList" style="display:block">
+            <div class="ui red segment" id="Empty" style="display:block">
+                您现在还没有订单，快去买买买吧！
+            </div>
+            @{ 
+                for (int i = 0; i < Model.Count(); ++i)
+                {
+            <div class="ui red segment" id=@string.Format("Order{0:D3}", i)>
+                @*订单001*@
+                <div class="ui grid">
+                    <div class="row">
+                        <a class="ui red image label">
+                            <i class="clipboard outline icon"></i>订单状态 <div class="detail">@Model[i].orderState</div>
+                        </a>
+                    </div>
+                </div>
+                @{
+                    int j = 0;
+                }
+                @foreach (var order in Model[i].DSItem)
+                {
+
+                    <div class="ui grid" style="background-color:#f7f7f7;">
+                        <div class="row" id=@string.Format("shop{0:D3}{1:D3}",i,j)>
+                            <div class="fourteen wide  column">
+                                <a style="color:#000000;">@order.Value[0].shopName</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui hiden grid">
+                        @for (int k = 0; k < order.Value.Count(); ++k)
+                        {
+
+                            <div class="row" id=@string.Format("goods{0:D3}{1:D3}{2:D3}",i,j,k)>
+                                <div class="four wide hidden column">
+                                    <img class="ui small image" src=@order.Value[k].imagePath>
+                                </div>
+                                <div class="six wide hidden column">
+                                    @order.Value[k].itemName
+                                </div>
+                                <div class="three wide hidden column">
+                                    @order.Value[k].itemPrice
+                                </div>
+                                <div class="one wide hidden column">
+                                    @order.Value[k].itemAmount
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                        }    
+                    <div class="ui hiden grid">
+                        <div class="row" style="background-color:#f7f7f7;">
+                            @*底部按钮栏*@
+                            <div class="eleven wide hidden column">
+                            </div>
+                            <div class="five wide hidden column">
+                                <a tabindex="0" class="ui animated  button" onclick="viewOrder()" id="@Model[i].orderID">
+                                    <div class="visible content">查看订单</div>
+                                    <div class="hidden content">
+                                        <i class="eye icon"></i>
+                                    </div>
+                                </a>
+                                <div tabindex="0" class="ui animated fade button" onclick="DeleteEnsure(this.id)" id="001">
+                                    <div class="visible content">删除订单</div>
+                                    <div class="hidden content">
+                                        <i class="trash alternate icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="trash alternate outline icon"></i>
+        您确定要删除此订单吗？
+    </div>
+
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon" id="CancelDelete"></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button"  onclick="DeleteOrder()">
+            <i class="checkmark icon" id="EnsureDele"></i>
+            确定
+        </div>
+    </div>
+</div>
+
+<script>
+    var orderNotEmpty = document.getElementById("OrderList").hasChildNodes();
+    function OrderEmpty() {
+        orderNotEmpty = document.getElementById("OrderList").hasChildNodes();
+        if (orderNotEmpty) {
+            document.getElementById("Empty").style.display = "none";
+        }
+        else {
+            document.getElementById("Empty").style.display = "block";
+            document.getElementById("OrderList").style.display = "none";
+        }
+    }
+    //暂时不用
+    //function DeleteEnsure(id) {
+    //    var key = id;
+    //    var deleteorder = document.getElementById("Order" + key);
+    //    DeleteEnsure1();
+    //    if (confirm("确定要删除改订单吗？")) {
+    //        deleteorder.parentNode.removeChild(deleteorder);
+    //        OrderEmpty();
+    //        alert("删除成功！");
+    //    } else {
+    //        alert("已经取消了删除操作");
+    //    }
+    //}
+    function DeleteOrder() {
+        console.log(deleteid);
+        var deleteorder = document.getElementById(deleteid);
+        deleteorder.parentNode.removeChild(deleteorder);
+
+    }
+    function ChangeOrderView(id) {
+
+    }
+    function Test() {
+        
+        alert(id);
+    }
+    OrderEmpty();
+   
+</script>
+
+<script>
+    var deleteid;//当前被选中删除的订单的id
+
+    function DeleteEnsure(id) {
+        console.log(id);
+        deleteid = "Order"+id;
+        console.log(deleteid);
+        $('.ui.basic.modal')
+            .modal('show')
+            ;
+    }
+
+    $('#All').on('click', function () {
+
+    })
+    $('#WaitPay').on('click', function () {
+
+    })
+    $('#WaitComment').on('click', function () {
+
+    })
+    $('#Finish').on('click', function () {
+
+    })
+    $('#WaitDeliver').on('click', function () {
+
+    })
+    $('#WaitReceive').on('click', function () {
+
+    })
+</script>
+<script>
+    function viewOrder() {
+        
+       // alert(event.currentTarget.id);
+        var o_id = event.currentTarget.id;
+        standardPost("/Order/OrderDetail", o_id, "o_id");
+    }
+</script>

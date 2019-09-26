@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Order";
+}
+
+@model OrderViewModel
+<div class="ui grid container">
+    <div class="two wide column"></div>
+    <div class="one wide column">
+        <a tabindex="0" class="ui animated fade button" onclick="ReturnShopOrder()">
+            <div class="visible content">
+                <i class="left arrow icon"></i>
+            </div>
+            <div class="hidden content">返回 </div>
+        </a>
+    </div>
+    <div class="ten wide column">
+        <div class="ui  segment">
+            <div class="ui segment" id="Order001">
+                <div class="ui grid">
+                    <div class="row">
+                        <a class="ui red image label">
+                            <i class="clipboard outline icon"></i>订单状态 <div class="detail">@DBPro.Entity.Order.OrderStateConvert[Model.orderState]</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="ui grid" style="background-color:#f7f7f7;">
+                    <div class="row">
+                        <div class="fourteen wide  column">
+                            <a style="color:#000000;">@Model.orderID</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="ui hiden grid">
+
+                    @{ double totalPrice = 0;
+                        for (int i=0;i<Model.LSItem.Count();++i)
+                        {
+                            totalPrice += Model.LSItem[i].itemAmount * Model.LSItem[i].itemPrice;
+
+                    <div class="row" id=@string.Format("goods{0:D3}{0:D3}",i)>
+                        <div class="four wide hidden column">
+                            <img class="ui small image" src=@Model.LSItem[i].imagePath>
+                        </div>
+                        <div class="six wide hidden column">
+                            @Model.LSItem[i].itemName
+                        </div>
+                        <div class="three wide hidden column">
+                            <fond>￥</fond><fond>@Model.LSItem[i].itemPrice</fond>
+                        </div>
+                        <div class="three wide hidden column">
+                            <fond>×</fond><fond>@Model.LSItem[i].itemAmount</fond>
+                        </div>
+                    </div>
+                        }
+                    }
+                    
+                </div>
+            </div>
+            <div class="ui red attached segment">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <a class="ui red ribbon label">订单信息</a>
+                    </div>
+                </div>
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="clipboard list icon"></i>订单编号 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.orderID
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="user icon"></i>买家姓名 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.userName
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"><i class="truck icon"></i>收货地址 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.province @Model.city @Model.district @Model.street @Model.detailAdress
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="money bill alternate outline icon"></i> 订单总价</div>
+                        </div>
+                        <div class="nine wide column">
+                            <font>@totalPrice</font><font>元</font>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"><i class="calendar alternate outline icon"></i>交易时间 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.createTime
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+        function ReturnShopOrder() {
+        var id="@Model.LSItem[0].shopID";
+            standardPost("/Shoporder/Shoporder", id, "s_id");
+    }
+</script>

@@ -1,0 +1,412 @@
+﻿@{
+    ViewData["Title"] = "Cart";
+}
+@model List<List<CartViewModels>>
+@*修改开始*@
+<h2 class="ui horizontal divider header"><i class="shopping cart icon"></i>购物车</h2>
+<div class="ui grid container" id="nonemessage" style="display:none">
+    <br>
+    <div class="ui icon message">
+        <i class="cart plus icon"></i>
+        <div class="content">
+            <div class="header">你的购物车中没有商品 </div>
+            <p>快去选择喜欢的商品吧！</p>
+        </div>
+    </div>
+</div>
+@*修改结束*@
+<div class="ui grid container">
+    <div class="one wide column"></div>
+    <div class="sixteen wide column">
+        <div class="ui red segment">
+            <div class="ui red segment">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="three wide column">
+                            <div class="ui checkbox">
+                                <input type="checkbox" id="all" onclick="Allcheckout(event)">
+                                <label></label>
+                            </div>
+                        </div>
+                        <div class="five wide hidden column">
+                            商品信息
+                        </div>
+                        <div class="two wide column">
+                            单价
+                        </div>
+                        <div class="two wide column">
+                            数量
+                        </div>
+                        <div class="two wide column">
+                            金额
+                        </div>
+                        <div class="two wide column">
+                            操作
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @{
+                int ItemCount = 0;
+                foreach(var list in Model)
+                {
+                    ItemCount += list.Count();
+                }
+                for (int i = 0; i < @Model.Count(); ++i)
+                {
+                    <div class="ui red  segment" id=@string.Format("depart{0:D3}", i)>
+                        <div class="ui hiden grid">
+                            <div class="row">
+                                <div class="three wide column">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" id=@string.Format("box{0:D3}", i) onclick="Departcheckout(event)">
+                                        <label></label>
+                                    </div>
+                                    @Model[i][0].shopName
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui hiden grid">
+                            @for (int j = 0; j < @Model[i].Count(); ++j)
+                            {
+                                <div class="row" id=@string.Format("goods{0:D3}{1:D3}", i, j)>
+                                    <div class="three wide column">
+                                        <div class="ui child checkbox">
+                                            <div class="ui checkbox">
+                                                <input type="checkbox" id=@string.Format("box{0:D3}{1:D3}", i, j) onclick="Goodscheckout(event)">
+                                                <label></label>
+                                            </div>
+                                        </div>
+                                        <img src=@Model[i][j].imagePath width="50%">
+                                    </div>
+                                    <div class="five wide hidden column" id="name001001">
+                                        @Model[i][j].itemName
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id=@string.Format("price{0:D3}{1:D3}", i, j)>@Model[i][j].itemPrice</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <div class="ui mini icon input" style="width:80%">
+                                            <input type="text" placeholder="数量" id=@string.Format("number{0:D3}{1:D3}", i, j) oninput="OnInput (event)" value="1">
+                                        </div>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id=@string.Format("total{0:D3}{1:D3}", i, j)>@Model[i][j].itemPrice</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <button class="circular ui icon button" onclick="Deletegoods(this.id)" id=@string.Format("delete{0:D3}{1:D3}", i, j) text="@Model[i][j].itemID">
+                                            <i class="close icon"></i>
+                                            <div hidden id=@string.Format("myid{0:D3}{1:D3}", i, j)>@Model[i][j].itemID</div>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+        <div class="ui red segment">
+            <div class="ui hiden grid">
+                <div class="row">
+                    <div class="two wide column">
+                        <div class="ui checkbox">
+                            <input type="checkbox" onclick="Allcheckout(event) " id="all2">
+                            <label>全选</label>
+                        </div>
+                    </div>
+                    <div class="six wide hidden column">
+                        <button class="compact ui button" onclick="Deleteselect(this.id)" id="deleteselect">删除 </button>
+                    </div>
+                    <div class="three wide column">
+                        已选商品
+                        <div class="ui red basic large label" id="totalnum">0</div>
+                        件
+                    </div>
+                    <div class="three wide column">
+                        合计
+                        <div class="ui red basic large label" id="totalprice">0</div>
+                        元
+                    </div>
+                    <div class="two wide column">
+                        <button class="compact ui button" disabled="disabled" id="buying" onclick="Purchase()">购买 </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="shop icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                交易
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">你确定要购买选中的这些商品并生成交易信息吗？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            再想想
+        </div>
+        <a class="ui green ok inverted button"  onclick="Topay()">
+            <i class="checkmark icon"></i>
+            是的，就是这些
+        </a>
+    </div>
+</div>
+<script>
+    var goodsnumber = 0;
+    var pricenumber = 0;
+    var finalnum = document.getElementById("totalnum");
+    var finalprice = document.getElementById("totalprice");
+    var confirmbuy = document.getElementById("buying");
+    function OnInput(event) {
+        var beforeprice = 0;
+
+        var key = event.target.id.substr(6, 6);
+        var totalprice = document.getElementById("total" + key);
+        var theprice = document.getElementById("price" + key).innerHTML;
+        var re = /^[0-9]+$/;
+        var thecheck = document.getElementById("box" + key);
+        if ((isNaN(event.target.value) && !re.test(event.target.value))) {
+            event.target.value = 1;
+        }
+        if (event.target.value == 0) {
+            event.target.value = 1;
+        }
+        if (event.target.value != "") {
+            beforeprice = (parseFloat(totalprice.innerHTML)).toFixed(2);
+            totalprice.innerHTML = (parseFloat(theprice) * parseFloat(event.target.value)).toFixed(2);
+
+        }
+        else {
+            beforeprice = (parseFloat(totalprice.innerHTML)).toFixed(2);
+            totalprice.innerHTML = (parseFloat(theprice)).toFixed(2);
+        }
+        if (thecheck.checked) {
+            finalprice.innerHTML = (pricenumber - beforeprice + parseFloat(totalprice.innerHTML)).toFixed(2);           
+            pricenumber = (parseFloat(finalprice.innerHTML)).toFixed(2);
+
+        }
+    }
+    function Departcheckout(event) {
+        var mydepart = event.target.id.substr(3, 3);
+        var getCheckBox = document.getElementById("depart" + mydepart).getElementsByTagName('input');
+        for (var i = 1; i < getCheckBox.length; i++) {
+            whichObj = getCheckBox[i];
+            if (whichObj.type == "checkbox") {
+
+                if (event.target.checked && !whichObj.checked) {
+                    confirmbuy.disabled = false;
+                    goodsnumber++;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+                    pricenumber =( parseFloat(pricenumber) + (parseFloat(totalprice.innerHTML))).toFixed(2);
+
+                }
+                else if (!event.target.checked && whichObj.checked) {
+                    goodsnumber--;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+                    pricenumber = (parseFloat(pricenumber) - (parseFloat(totalprice.innerHTML))).toFixed(2);
+                }
+                whichObj.checked = event.target.checked;
+            }
+        }
+        //修改部分
+        if (event.target.checked) {
+            CheckAll();
+        }
+        else {
+            document.getElementById("all").checked = false;
+            document.getElementById("all2").checked = false;
+        }
+        //修改结束
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = (parseFloat(pricenumber)).toFixed(2);
+        if (goodsnumber == 0) {
+            confirmbuy.disabled = true;
+        }
+    }
+    function Allcheckout(event) {
+        var mydepart = event.target.id.substr(3, 3);
+        var re = /^[0-9]+.?[0-9]*$/;
+        var getCheckBox = document.getElementsByTagName('input');
+        for (var i = 0; i < getCheckBox.length; i++) {
+            whichObj = getCheckBox[i];
+            if (whichObj.type == "checkbox") {
+                if (event.target.checked && re.test(whichObj.id.substr(-4, 1)) && !whichObj.checked) {
+                    confirmbuy.disabled = false;
+                    goodsnumber++;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+
+                    pricenumber = parseFloat(pricenumber) + parseFloat(totalprice.innerHTML);
+ 
+                }
+                else if (!event.target.checked && re.test(whichObj.id.substr(-4, 1)) && whichObj.checked) {
+                    goodsnumber--;
+                    confirmbuy.disabled = true;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+                    pricenumber = (parseFloat(pricenumber) - parseFloat(totalprice.innerHTML)).toFixed(2);
+                }
+                whichObj.checked = event.target.checked;
+            }
+        }
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+    }
+    function Goodscheckout(event) {
+        var key = event.target.id.substr(3, 6);
+        var totalprice = document.getElementById("total" + key);
+
+        if (event.target.checked) {
+            goodsnumber++;
+            pricenumber = (parseFloat(pricenumber) + parseFloat(totalprice.innerHTML)).toFixed(2);
+            confirmbuy.disabled = false;
+            CheckSameDepart(event.target.id.substr(3, 3));
+        }
+        else {
+            goodsnumber--;
+            pricenumber = (parseFloat(pricenumber) - parseFloat(totalprice.innerHTML)).toFixed(2);
+            //修改部分
+            var fatherkey = event.target.id.substr(3, 3);
+            var fatherdepart = document.getElementById("box" + fatherkey);
+            fatherdepart.checked = event.target.checked;
+            document.getElementById("all").checked = false;
+            document.getElementById("all2").checked = false;
+
+            //修改结束
+        }
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+        if (goodsnumber == 0) {
+            confirmbuy.disabled = true;
+        }
+    }
+    function Deletegoods(id) {
+
+        var key = id.substr(6, 6);
+        var mydepart = id.substr(6, 3);
+        var thecheck = document.getElementById("box" + key);
+        var totalprice = document.getElementById("total" + key);
+        var deletegoods = document.getElementById("goods" + key);
+        var item_id = document.getElementById(id).getElementsByTagName("div")[0].innerHTML;
+
+        //document.getElementById(id).getAttributeNames()["name"];
+
+        if (thecheck.checked) {
+            pricenumber = pricenumber - parseFloat(totalprice.innerHTML);
+            finalprice.innerHTML = pricenumber;
+            goodsnumber--;
+            if (goodsnumber == 0) {
+                confirmbuy.disabled = true;
+            }
+            finalnum.innerHTML = goodsnumber;
+        }
+
+        deletegoods.parentNode.removeChild(deletegoods);
+        var getCheckBox = document.getElementById("depart" + mydepart).getElementsByTagName('input');
+        var k = 1;
+        for (; k < getCheckBox.length; k++) {
+            whichObj = getCheckBox[k];
+
+            if (whichObj.type == "checkbox") {
+                break;
+            }
+        }
+        CheckSameDepart(id.substr(6, 3));
+        if (k == getCheckBox.length) {
+            var deletedepart = document.getElementById("depart" + mydepart);
+            deletedepart.parentNode.removeChild(deletedepart);
+        }
+
+         
+
+
+        $.post("/Cart/DeleteItem", { i_id: item_id }, function (text) {
+            alert(text);
+        });
+
+    }
+    function Deleteselect(id) {
+        var chks = $("input:checked");
+        for (var i = 0; i < chks.length; i++) {
+            if (chks[i].id == "all" || chks[i].id == null) {
+                continue;
+            }
+            else if (!isNaN(chks[i].id.substr(-4, 4))) {
+
+                var deletegoods = document.getElementById("delete" + chks[i].id.substr(3, 6));
+
+                Deletegoods(deletegoods.id);
+
+            }
+        }
+        goodsnumber = 0;
+        pricenumber = 0;
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+        confirmbuy.disabled = true;
+        //修改开始
+        document.getElementById("all").checked = false;
+        document.getElementById("all2").checked = false;
+        //修改结束
+    }
+    function CheckSameDepart(departid) {
+        var getCheckBox = document.getElementById("depart" + departid).getElementsByTagName('input');
+        var i = 1
+        for (; i < getCheckBox.length; i++) {
+            if (getCheckBox[i].type == "checkbox" && !getCheckBox[i].checked) {
+                return false;
+            }
+        }
+        getCheckBox[0].checked = true;
+
+        CheckAll();
+
+    }
+    function CheckAll() {
+
+        var getCheckBox = document.getElementsByTagName('input');
+        if (getCheckBox.length == 4) {
+            document.getElementById("nonemessage").style.display = "block";
+        }
+        for (var i = 2; i < getCheckBox.length - 1; i++) {
+            if (getCheckBox[i].type == "checkbox" && !getCheckBox[i].checked) {
+                return false;
+            }
+        }
+        document.getElementById("all").checked = true;
+        document.getElementById("all2").checked = true;
+    }
+    function Purchase() {
+        $('.ui.basic.modal').modal('show');
+    }
+    //跳转到pay，信息传输
+    function Topay() {
+        var goodslist = new Array();
+        var numberlist = new Array();
+        var chks = $("input:checked");
+        for (var i = 0; i < chks.length; i++) {
+            if (!isNaN(chks[i].id.substr(-4, 4))) {
+                var buygoods = document.getElementById("myid" + chks[i].id.substr(3, 6));
+                var buynumber = document.getElementById("number" + chks[i].id.substr(3, 6));
+                goodslist.push(buygoods.innerHTML);
+                numberlist.push(buynumber.value);              
+            }
+        }
+        twoArgsPost("/Pay/Pay", goodslist, "i_ids", numberlist, "amounts");
+    }
+    if ("0" == @ItemCount) {
+        document.getElementById("nonemessage").style.display = "block";
+    }
+</script>

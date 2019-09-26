@@ -1,0 +1,267 @@
+﻿
+@{
+    ViewData["Title"] = "ShopSearch";
+}
+@model SearchViewModel
+<div class="ui grid">
+    <div class="three wide column"></div>
+    <div class="four wide column">
+        <div class="ui floating dropdown labeled icon button">
+            <i class="filter icon"></i>
+            <span class="text">分类</span>
+            <div class="menu">
+                <div class="ui icon search input">
+                    <i class="search icon"></i>
+                    <input type="text" placeholder="Search tags...">
+                </div>
+                <div class="divider"></div>
+                <div class="header"><i class="tags icon"></i> 标签 </div>
+                <div class="scrolling menu">
+                    <div class="item">
+                        <div class="ui red empty circular label"></div>家用电器
+                    </div>
+                    <div class="item">
+                        <div class="ui blue empty circular label"></div>家具
+                    </div>
+                    <div class="item">
+                        <div class="ui black empty circular label"></div>服装
+                    </div>
+                    <div class="item">
+                        <div class="ui purple empty circular label"></div>手表
+                    </div>
+                    <div class="item">
+                        <div class="ui orange empty circular label"></div>数码电器
+                    </div>
+                    <div class="item">
+                        <div class="ui empty circular label"></div>药品
+                    </div>
+                    <div class="item">
+                        <div class="ui yellow empty circular label"></div>食品
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="three wide column"></div>
+    <div class="three wide column">
+        <div class="ui menu" style="margin-left:30%">
+            <a class="browse item">销量<i class="dropdown icon"></i> </a>
+            <div class="ui popup bottom left transition hidden" style="width:60%">
+                <a class="item">销量从低到高</a>
+                <a class="item">销量从高到低</a>
+            </div>
+            <a class="browse item">评价<i class="dropdown icon"></i> </a>
+            <div class="ui popup bottom left transition hidden" style="width:60%">
+                <a class="item">评价从低到高</a>
+                <a class="item">评价从高到低</a>
+            </div>
+        </div>
+    </div>
+</div>
+<h4 class="ui horizontal divider header"><i class="tag icon"></i> 搜索结果 </h4>
+<br />
+
+@{
+
+    for (int i = 0; i < @Model.LSShop.Count() ; ++i)
+    {
+    <div class="ui centered container" style="width:68%"> 
+        <div class="ui celled grid">
+            <div class="row">
+                <div class="five wide column">
+                    <div class="row">
+                        <div class="ui header click" id=@Model.LSShop[i].shopID>
+                            <img class="ui circular image" src=@Model.LSShop[i].imagePath style="width:80px;height:80px">
+                            <div class="content">
+                                <a>@Model.LSShop[i].shopName</a>
+                                <div class="ui sub header">
+                                    <p>卖家:@Model.LSShop[i].userName</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="ui header">
+                            <div class="ui sub header">
+                                <p>销量:@Model.LSShop[i].salesVolume&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共有 @Model.LSShop[i].itemNum 件宝贝</p>
+                                <div>
+                                    店铺评分:<div class="ui star rating" data-rating=0 data-max-rating=@Model.LSShop[i].favorableRate ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="eleven wide column">
+                    <div class="ui four cards">
+                        @{
+                            for (int j = 0; j < @Model.LSShop[i].LSItem.Count(); ++j)
+                            {
+                                <div class="ui link card" id=@Model.LSShop[i].LSItem[j].itemID>
+                                    <div class="image">
+                                        <img src=@Model.LSShop[i].LSItem[j].imagePath style="height:130px" />
+                                    </div>
+                                    <div class="extra">
+                                        <i class="yen sign icon"></i>&nbsp;&nbsp;@Model.LSShop[i].LSItem[j].itemPrice
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <!--
+                            <div class="ui link card">
+                                <div class="image">
+                                    <img src="~/images/image.png" style="height:130px" />
+                                </div>
+                                <div class="extra">
+                                    <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                                </div>
+                            </div>
+                            <div class="ui link card">
+                                <div class="image">
+                                    <img src="~/images/image.png" style="height:130px" />
+                                </div>
+                                <div class="extra">
+                                    <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                                </div>
+                            </div>
+                            <div class="ui link card">
+                                <div class="image">
+                                    <img src="~/images/image.png" style="height:130px" />
+                                </div>
+                                <div class="extra">
+                                    <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                                </div>
+                            </div>
+         -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+}
+<!--
+<div class="ui centered container" style="width:68%">
+    <div class="ui celled grid">
+        <div class="row">
+            <div class="five wide column">
+                <div class="row">
+                    <div class="ui header">
+                        <img class="ui circular image" src="~/images/image.png" style="width:80px;height:80px">
+                        <div class="content">
+                            <a>店铺名称</a>
+                            <div class="ui sub header">
+                                <p>卖家:卖家姓名</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="ui header">
+                        <div class="ui sub header">
+                            <p>销量:4564&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共有555件宝贝</p>
+                            <div>
+                                店铺评分:<div class="ui star rating" data-rating="3" data-max-rating="5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="eleven wide column">
+                <div class="ui four cards">
+                    <div class="ui link card">
+                        <div class="image">
+                            <img src="~/images/img5.jpg" style="height:130px" />
+                        </div>
+                        <div class="extra">
+                            <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                        </div>
+                    </div>
+                    <div class="ui link card">
+                        <div class="image">
+                            <img src="~/images/image.png" style="height:130px" />
+                        </div>
+                        <div class="extra">
+                            <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                        </div>
+                    </div>
+                    <div class="ui link card">
+                        <div class="image">
+                            <img src="~/images/image.png" style="height:130px" />
+                        </div>
+                        <div class="extra">
+                            <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                        </div>
+                    </div>
+                    <div class="ui link card">
+                        <div class="image">
+                            <img src="~/images/image.png" style="height:130px" />
+                        </div>
+                        <div class="extra">
+                            <i class="yen sign icon"></i>&nbsp;&nbsp;100000000000
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    -->
+<br />
+<div class="ui grid container">
+    <div class="five wide column"></div>
+    <div class="six wide column" style="text-align:center">
+        <i class="large chevron left link icon"></i>
+        <b><font size="3">1/4</font></b>
+        <i class="large chevron right link icon"></i>
+    </div>
+    <form method="post" class="four wide column" style="text-align:right">
+        <b>
+            <font size="3">
+                第
+                <div class="ui input mini focus">
+                    <input type="text" value="1" style="width:41px;height:28px">
+                </div>
+                页
+            </font>
+        </b>
+        <button type="submit" class="ui tiny compact button">GO!</button>
+    </form>
+</div>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating("disable");
+    $('.ui .menu .browse')
+        .popup({
+            //inline: true,
+            //hoverable: true,
+            position: 'bottom left',
+            delay: {
+                show: 300,
+                hide: 800
+            }
+        })
+        ;
+    //不用
+    //$('#page a.item').on('click', function () {
+    //    var page = this.innerHTML;
+    //    console.log(page);
+    //    switch (page) {
+    //        case "1": console.log("a"); break;
+    //    }
+    //});
+</script>
+
+<script>
+    //店铺跳转
+    $('.ui.header.click').on('click', function () {
+        standardPost("/Shops/ShopDetails", this.id, "s_id");
+    });
+    //商品跳转
+    $('.ui.link.card').on('click', function () {
+        standardPost("/Goods/Details", this.id, "i_id");
+    });
+</script>

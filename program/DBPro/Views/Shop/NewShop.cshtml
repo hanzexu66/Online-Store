@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "NewShop";
+}
+@model DBPro.Models.NewShopViewModel;
+<div class="ui centered container" style="width:60%">
+    <div class="ui icon message">
+        <i class="handshake outline icon"></i>
+        <div class="content">
+            <div class="header">
+                <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                        加入我们
+                    </font>
+                </font>
+            </div>
+            <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">申请店铺成为我们的一员吧！</font></font></p>
+        </div>
+    </div>
+</div>
+<br /><br /><br /><br />
+<div class="ui centered container" style="width:50%;">
+    <div class="centered row">
+        <div class="column" align="center">
+            <h1 class="ui header">
+                申请店铺
+            </h1>
+        </div>
+    </div>
+    <div class="eight column centered row">
+        <div class="ui horizontal divider">请填写以下信息</div>
+        <form class="ui form segment" method="post" action="/Shop/NewShop" onsubmit="check()">
+            <div class="field">
+                <label>姓名</label>
+                <input type="text" readonly="" value="@Model.name">@*姓名放进value里*@
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>账号</label>
+                    <input type="text" readonly="" value="@Model.email">@*账号放进value里*@
+                </div>
+                <div class="field">
+                    <label>店铺名称</label>
+                    <input type="text" name="shopname" placeholder="店铺名称">
+                </div>
+            </div>
+            <div class="field">
+                <label>销售商品类别</label>
+                <select name="kinds" multiple="" class="ui dropdown">
+                    <option value="">选择类别</option>
+                    <option value="application">家用电器</option>
+                    <option value="phones">手机</option>
+                    <option value="computers">电脑</option>
+                    <option value="furniture">家具</option>
+                    <option value="clothing">服装</option>
+                    <option value="makeup">美妆</option>
+                    <option value="shoes">女鞋</option>
+                    <option value="cars">汽车</option>
+                    <option value="food">食品</option>
+                    <option value="medicine">医药</option>
+                    <option value="books">图书</option>
+                    <option value="v-goods">虚拟商品</option>
+                </select>
+            </div>
+            <div class="inline field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="terms">
+                    <label>我同意条款和条件</label>
+                </div>
+            </div>
+            <div align="center">
+                <div class="ui primary submit button">
+                    提交申请
+                </div>
+            </div>
+            <div class="ui error message"></div>
+        </form>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                申请成功
+            </font>
+        </font>
+    </div>
+    <div class="content">
+        <p>申请成功，请耐心等待管理员审核~</p>
+    </div>
+    <div class="actions">
+        <div class="ui green ok inverted button" onclick="subm()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function check() {
+        //其他检查
+        if ($('.ui.form').form('is valid')) {
+            $('form').submit(function () {
+                return false;
+            });
+            $('.ui.basic.modal').modal('show');
+            $('form').submit(function () {
+                return true;
+            });
+        }
+    }
+
+    function subm() {
+        window.history.back(-1);
+    }
+
+    //表单检查
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                shopname: {
+                    identifier: 'shopname',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入店铺名称'
+                        },
+                        {
+                            type: 'maxLength[20]',
+                            prompt: '店铺名称长度不能大于20位'
+                        }
+                    ]
+                },
+                kinds: {
+                    identifier: 'kinds',
+                    rules: [
+                        {
+                            type: 'minCount[1]',
+                            prompt: '请至少选择一种类型'
+                        }
+                    ]
+                },
+                terms: {
+                    identifier: 'terms',
+                    rules: [
+                        {
+                            type: 'checked',
+                            prompt: '你必须同意我们的条款才能注册账号'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+
+</script>

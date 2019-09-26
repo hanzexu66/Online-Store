@@ -1,0 +1,730 @@
+﻿@{
+    ViewData["Title"] = "ShopInfo";
+}
+@model DBPro.Models.ShopInfoViewModel
+
+<div class="ui centered grid" align="center">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item active" id="menu1">店铺信息 </a>
+            <a class="item" id="menu2">我的商品 </a>
+            <a class="item" id="menu3">店铺订单 </a>
+        </div>
+    </div>
+    <div class="ten wide stretched column">
+        <div class="ui segment" id="text1" align="center">
+            <img id="pic" style="width:100px;height:100px;border-radius:50%;" src="@Model.IconPath">@**@
+            <input id="upload" name="file" accept="image/*" type="file" style="display: none">
+            <br><br>
+            <b><font size="5" id="ask">店铺名称：</font><font size="5" id="name">@Model.name</font></b>
+            <br><br />
+                <form class="ui large form" method="post" action="/ShopInfo/updateName">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" maxlength="20" name="name" placeholder="请输入新的店铺名" id="rename" />
+                    </div>
+                    <div class="ui large teal submit button" id="changename">重命名</div>
+
+                    <br>
+                    <div class="ui error message"></div>
+                </form>
+            <br /><br /><br /><br />
+            <div style="margin-right:560px"><b><font size="3" id="aks">店铺简介:</font></b></div>
+            <form class="ui reply form" method="post" action="/ShopInfo/updateIntro">
+                <div class="field">
+                    <textarea name="intro" maxlength="200" style="width:70%;align-self:center">@Model.intro</textarea>
+                </div>
+                <div class="ui blue labeled submit icon button" id="sa"><i class="icon edit"></i> 保存 </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+
+        <div class="ui segment" hidden="hidden" id="text2">
+            <div class="ui red segment">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="one wide hidden column">
+
+                        </div>
+                        <div class="three wide column">
+                            <div class="ui icon button" id="plusgoods">
+                                <i class="add icon"></i>
+                            </div>
+                        </div>
+                        <div class="three wide hidden column">
+                            名称
+                        </div>
+                        <div class="three wide column">
+                            价格
+                        </div>
+                        <div hidden class="two wide column" style="display:none">
+                            商品ID
+                        </div>
+                        @*<div class="six wide column">
+                            <div class="ui icon input">
+                                <input class="prompt" type="text" placeholder="搜寻店内商品……">
+                                <i class="search link icon" id="sc"></i>
+                            </div>
+                        </div>*@
+
+
+
+                    </div>
+                </div>
+            </div>
+            @{
+                for (int i = 0; i < Model.items.Count(); ++i)
+                {
+                    <div class="ui red  segment" id="@string.Format("myitem{0}",Model.items[i].itemID)">
+                        <div class="ui hiden grid">
+
+                            <div class="row" id="goods" +i>
+                                <div class="one wide hidden column">
+
+                                </div>
+                                <div class="three wide column">
+                                    <img src=@Model.itemImagePath[i][0] style="width:50%">
+                                </div>
+                                <div class="three wide hidden column" id="name" +i>
+                                    @Model.items[i].itemName
+                                </div>
+                                <div class="three wide column">
+                                    <label id="price">@Model.items[i].itemPrice</label>
+                                </div>
+                                <div class="two wide column" style="display:none">
+                                    <label id="itemID">@Model.items[i].itemID</label>
+                                </div>
+                                <div class="three wide column">
+                                    <button class="ui basic button" id="@(Model.items[i].itemID)" onclick="Showgoods(this.id)">
+                                        查看
+                                    </button>
+                                </div>
+                                <div class="three wide column">
+                                    <button class="ui basic button" id="@(Model.items[i].itemID)" color="red" onclick="Deletegoods(this.id)">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+        @*添加商品*@
+        <div class="ui segment" id="addgoodspage" hidden="hidden">
+            <form class="ui form" id="addgoods">
+                <div class="ui header">
+                    <div class="content">
+                        <label>添加商品</label>
+                    </div>
+
+                </div>
+                <div class="field">
+                    <div class="fields">
+                        <div class="six wide field">
+                            <label>商品名字</label>
+                            <input type="text" id="goodssname" maxlength="20" name="name" placeholder="请填写商品名字">
+                        </div>
+                        <div class="two wide field"></div>
+                        <div class="three wide field">
+                            <label>单价</label>
+                            <input type="text" id="goodsprice" maxlength="8" name="pnumber" placeholder="请填写商品金额">
+                        </div>
+                        <div class="two wide field" hidden="hidden"></div>
+                        <div class="three wide field" hidden="hidden">
+                            <label>ID</label>
+                            <input type="text" id="newgoodsID" name="itemID" value="@DBPro.Logic.OrderManager.getID()">
+                        </div>
+                        <div class="one wide field"></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="eight wide field">
+                        <label>销售商品类别</label>
+                        <select name="type" class="ui dropdown" id="goodstype">
+                            <option value="">请选择类别</option>
+                            <option value="electric">家用电器</option>
+                            <option value="smartphone">手机</option>
+                            <option value="computer">电脑</option>
+                            <option value="furniture">家具</option>
+                            <option value="clothing">服装</option>
+                            <option value="makeup">美妆</option>
+                            <option value="shoes">女鞋</option>
+                            <option value="car">汽车</option>
+                            <option value="food">食品</option>
+                            <option value="medicine">医药</option>
+                            <option value="book">图书</option>
+                            <option value="vproduct">虚拟商品</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>商品图片</label>
+                    <div class="fields">
+                        <div class="three wide field">
+                            <img id="pic991" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload991" name="file" accept="image/*" type="file" style="display: none" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete991"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic992" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload992" name="file" accept="image/*" type="file" style="display: none" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete992"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic993" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload993" name="file" accept="image/*" type="file" style="display: none" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete993"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic994" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload994" name="file" accept="image/*" type="file" style="display: none" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete994"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>商品介绍</label>
+                    <textarea placeholder="一个好的介绍可以吸引更多顾客~" name="intro" id="goodsintro"></textarea>
+                </div>
+                <div class="inline field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="terms">
+                        <label>我同意条款和条件</label>
+                    </div>
+                </div>
+                <div align="center">
+                    <div class="ui primary submit button apply">
+                        提交商品申请
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+
+        @*查看修改商品*@
+        <div class="ui segment" id="showgoodspage" hidden="hidden">
+            <form class="ui form" id="checkgoods" method="post" action="/ShopInfo/UpdateItem" onsubmit="preserve()">
+                <div class="ui header">
+                    <div class="content">
+                        <label>修改商品</label>
+                    </div>
+                    <div class="ui right floated header">
+                        <i class=" mini pencil link alternate icon" onclick="Revisegoods(this.id)" id="revise"></i>
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <div class="fields">
+                        <div class="six wide field">
+                            <label>商品名字</label>
+                            <input type="text" id="thisname" maxlength="20" name="name" readonly="readonly">
+                        </div>
+                        <div class="two wide field"></div>
+                        <div class="three wide field">
+                            <label>单价</label>
+                            <input type="text" id="thisprice" maxlength="8" name="pnumber" readonly="readonly">
+                        </div>
+                        <div class="two wide field" hidden="hidden"></div>
+                        <div class="three wide field" hidden="hidden">
+                            <label>ID</label>
+                            <input type="text" id="thisID" name="itemID" readonly="readonly">
+                        </div>
+                        <div class="one wide field"></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="eight wide field">
+                        <label>销售商品类别</label>
+                            <input type="text" id="thistype" readonly="readonly">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>商品图片</label>
+                    <div class="fields">
+                        <div class="three wide field">
+                            <img id="pic001" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload001" name="file" accept="image/*" type="file" style="display: none" disabled="disabled" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete001" style="display:none;"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic002" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload002" name="file" accept="image/*" type="file" style="display: none" disabled="disabled" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete002" style="display:none;"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic003" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload003" name="file" accept="image/*" type="file" style="display: none" disabled="disabled" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete003" style="display:none;"></i>
+                        </div>
+                        <div class="three wide field">
+                            <img id="pic004" style="width:100px;height:100px;" src="@DBPro.Entity.Image.defaultLocalPath" class="show-img">
+                            <input id="upload004" name="file" accept="image/*" type="file" style="display: none" disabled="disabled" onchange="SelectImg(this.id)">
+                            <i class="mini close link icon" id="delete004" style="display:none"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>商品介绍</label>
+                    <textarea readonly="readonly" maxlength="200" id="thistext" name="intro"></textarea>
+                </div>
+                <div align="center">
+                    <button class="ui primary submit button save" disabled="disabled"  id="preservegoods">
+                        保存商品
+                    </button>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+@*添加提示*@
+@*<div class="ui basic modal" id="wanttoadd">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                商品申请成功
+            </font>
+        </font>
+    </div>
+    <div class="content">
+        <p>商品申请成功，请耐心等待管理员审核~</p>
+    </div>
+    <div class="actions">
+        <div class="ui green ok inverted button" onclick="submapply()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>*@
+@*修改提示*@
+@*<div class="ui basic modal" id="wanttopreserve">
+    <div class="ui icon header">
+        <i class="check icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                商品修改成功
+            </font>
+        </font>
+    </div>
+    <div class="content">
+        <p>商品申请成功，请耐心等待管理员审核~</p>
+    </div>
+    <div class="actions">
+        <div class="ui green ok inverted button" onclick="submrevise()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>*@
+<script>
+    function getUrlBase64(url, callback) {
+        var canvas = document.createElement("canvas");   //创建canvas DOM元素
+        var ctx = canvas.getContext("2d");
+        var img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.src = url;
+        img.onload = function () {
+            canvas.height = 60; //指定画板的高度,自定义
+            canvas.width = 85; //指定画板的宽度，自定义
+            ctx.drawImage(img, 0, 0, 60, 85); //参数可自定义
+            var dataURL = canvas.toDataURL("image/jpeg");
+            callback.call(this, dataURL); //回掉函数获取Base64编码
+            canvas = null;
+        };
+    }
+</script>
+<script>
+
+    $('#menu1').on('click', function () {
+        $('#text1').show();
+        $('#text2').hide();
+        $('#addgoodspage').hide();
+        $('#showgoodspage').hide();
+    })
+
+    $('#plusgoods').on('click', function () {
+        $('#text1').hide();
+        $('#text2').hide();
+        $('#addgoodspage').show();
+        $('#showgoodspage').hide();
+    })
+    $('#changename').on('click', function () {
+        if ($("#rename").val() != "") {
+            $('#name').text($("#rename").val());
+        }
+    })
+
+    $(function () {
+        $('.mini.close.link.icon').click(function () {
+            var deletenumber = this.id.substr(-3, 3);
+            $(eval("pic" + deletenumber)).attr("src", "@DBPro.Entity.Image.defaultLocalPath");
+            var theimagenum = parseInt(this.id.substr(-1, 1)) - 1;
+            console.log(theimagenum);
+            base64List[theimagenum] = "";
+        });
+    });
+    var base64List = ["", "", "", ""];
+    getUrlBase64("@DBPro.Entity.Image.defaultLocalPath", function (base64) {
+        for (var i = 0; i < 4; i++)
+        {
+            base64List[i] = base64.substring(base64.indexOf(",") + 1);
+        }
+        //alert(base64List[3]);
+    })
+    //var fileInput = document.getElementsByName("file");
+    //    //previewImg = document.getElementsByClassName("show-img");
+    $('.show-img').click(function () {
+        var picnumber = this.id.substr(-3, 3);
+        console.log(picnumber);
+        $(eval("upload" + picnumber)).click(); //隐藏了input:file样式后，点击头像就可以本地上传
+
+    })
+
+
+    function SelectImg(id) {
+        var picnumber = id.substr(-3, 3);
+        var base64;
+        var file = document.getElementById(id).files[0];
+        var reader = new FileReader();
+        // 调用reader.readAsDataURL()方法，把图片转成base64
+        reader.readAsDataURL(file);
+        var shownumber = id.substr(-3, 3);
+        reader.addEventListener("load", function () {
+            base64 = reader.result.substring(reader.result.indexOf(",") + 1);
+            base64List[parseInt(picnumber.substr(-1, 1)) - 1] = base64;
+            console.log(base64List[parseInt(picnumber.substr(-1, 1)) - 1]);
+            
+            $(eval("pic" + shownumber)).attr("src", reader.result);
+            //console.log(base64);
+        }, false);
+    }
+
+
+
+
+    $('.ui.primary.submit.button.apply').on('click', function () {
+       // alert("wojinqule");
+        if ($('#addgoods').form('is valid')) {
+            $.ajax({
+                type: "post",
+                async: false,
+                url: "/ShopInfo/AddItem",
+                data: {
+                    itemID: document.getElementById("newgoodsID").value,
+                    name: document.getElementById("goodssname").value,
+                    pnumber: document.getElementById("goodsprice").value,
+                    type: document.getElementById("goodstype").value,
+                    intro: document.getElementById("goodsintro").value
+                },
+                success: function (result) {
+                    //alert("商品图片上传成功！");
+                }
+            });
+
+            $.ajax({
+                type: "post",
+                async: false,
+                url: "/ShopInfo/updateImage",
+                data: {
+                    UrlData: base64List,
+                    itemID: document.getElementById("newgoodsID").value
+                },
+                success: function (result) {
+                    alert("商品图片上传成功！");
+                }
+            });
+
+        }
+    })  
+    //$('.ui.primary.submit.button.save').on('click', function () {
+
+    //    if ($('#checkgoods').form('is valid')) {
+    //        $('#checkgoods').submit(function () {
+    //            return false;
+    //        });
+    //        $.ajax({
+    //            type: "post",
+    //            url: "/ShopInfo/updateImage",
+    //            data: {
+    //                UrlData: base64List,
+    //                itemID: document.getElementById("thisID").value
+    //            },
+    //            success: function (result) {
+    //                //alert("商品图片上传成功！");
+    //            }
+    //        });
+    //        $('#checkgoods').submit(function () {
+    //            return true;
+    //        });
+    //    }
+    //});
+
+    $('#sa').on('click', function () {
+        $('#discribe').text($("#discribe").val());
+    })
+
+    $('#menu2').on('click', function () {
+        $('#text2').show();
+        $('#text1').hide();
+        $('#addgoodspage').hide();
+        $('#showgoodspage').hide();
+    })
+
+    $('#menu3').on('click', function () {
+        //window.location.href = "/Shoporder/Shoporder";
+        var id ="@Model.shopID";
+        standardPost("/Shoporder/Shoporder", id, "s_id");
+    })
+
+    $('#menu3').on('click', function () {
+
+    })
+
+
+    $('#delete001001').on('click', function () {
+        $('#goods001001').hide();
+    })
+
+    $('#sc').on('click', function () {
+
+    })
+    function Showgoods(id) {
+        document.getElementById("text2").style.display = "none";
+        document.getElementById("text1").style.display = "none";
+        document.getElementById("showgoodspage").style.display = "block";
+
+        var key = id.substr(6, 6);
+        $.ajax({
+            type: "post",
+            url: "/ShopInfo/getItem",
+            data: {
+                itemID: id
+            },
+            success: function (result) {
+                document.getElementById("thisname").value = result.item.itemName;
+                document.getElementById("thisprice").value = result.item.itemPrice;
+                var dic = {
+                    "electric": "家用电器",
+                    "smartphone": "手机",
+                    "computer": "电脑",
+                    "furniture": "家具",
+                    "clothing": "服装",
+                    "makeup": "美妆",
+                    "shoes": "女鞋",
+                    "car": "汽车",
+                    "food": "食品",
+                    "medicine": "医药",
+                    "book": "图书",
+                    "vproduct": "虚拟商品"
+                };
+                document.getElementById("thistype").value = dic[result.item.itemType];
+                document.getElementById("thistext").value = result.item.itemIntroduction;
+                document.getElementById("thisID").value = result.item.itemID;
+               // alert(result.itemimage1);
+                document.getElementById("pic001").src = result.itemimage1;
+                document.getElementById("pic002").src = result.itemimage2;
+                document.getElementById("pic003").src = result.itemimage3;
+                document.getElementById("pic004").src = result.itemimage4;
+            }
+        });
+
+    }
+
+    function Deletegoods(id) {
+        $.ajax({
+            type: "post",
+            url: "/ShopInfo/deleteItem",
+            data: {
+                itemID: id
+            },
+            success: function (result) {
+                if (result) {
+                    var deleteitem = document.getElementById("myitem" + id);
+                    deleteitem.parentNode.removeChild(deleteitem);
+                }
+                else
+                    alert("删除失败！");
+            }
+        });
+    }
+
+
+    //function check() {
+    //    //其他检查
+    //    if ($('#addgoods').form('is valid')) {
+    //        $('form').submit(function () {
+    //            return false;
+    //        });
+    //        $('#wanttoadd').modal('show');
+    //        $('form').submit(function () {
+    //            return true;
+    //        });
+    //    }
+    //}
+
+    function preserve() {
+        if ($('#checkgoods').form('is valid')) {
+            $('form').submit(function () {
+                return false;
+            });
+            $.ajax({
+                type: "post",
+                url: "/ShopInfo/updateImage",
+                data: {
+                    UrlData: base64List,
+                    itemID: document.getElementById("thisID").value
+                },
+                success: function (result) {
+                    alert("商品图片上传成功！");
+                }
+            });
+            $('form').submit(function () {
+                return true;
+            });
+            document.getElementById("thisname").readOnly = true;
+            document.getElementById("thisprice").readOnly = true;
+            document.getElementById("thistext").readOnly = true;
+            $('#revise').removeClass('mini minus link icon');
+            $('#revise').addClass('mini pencil link alternate icon');
+            Isrevise = 0;
+            document.getElementById("preservegoods").disabled = true;
+        }
+    }
+    var Isrevise = 0; //用于看是否再修改
+    function Revisegoods(id) {
+        //其他信息从数据库 介绍 标签....
+
+        if (Isrevise == 0) {
+
+            document.getElementById("thisname").readOnly = false;
+            document.getElementById("thisprice").readOnly = false;
+            document.getElementById("thistext").readOnly = false;
+            for (var i = 1; i < 5; i++) {
+                document.getElementById("upload00" + i).disabled = false;
+                document.getElementById("delete00" + i).style.display = "block";
+            }
+            $('#revise').removeClass('mini pencil link alternate icon');
+            $('#revise').addClass('mini minus link icon')
+            Isrevise = 1;
+            document.getElementById("preservegoods").disabled = false;
+
+        }
+    }
+
+
+    $(document).ready(function () {
+        $('.ui.form').form({
+            fields: {
+                name: {
+                    identifier: 'name',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入商品名字'
+                        },
+                        {
+                            type: 'maxLength[20]',
+                            prompt: '商品名字长度不可大于20位'
+                        }
+                    ]
+                },
+                pnumber: {
+                    identifier: 'pnumber',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入单价'
+                        },
+                        {
+                            type: 'number',
+                            prompt: '请输入一个合法的数字'
+                        },
+                        {
+                            type: 'integer[1..99999999]',
+                            prompt: '商品价格不可为负数，且不能超过8位'
+                        }
+                    ]
+                },
+                kinds: {
+                    identifier: 'kinds',
+                    rules: [
+                        {
+                            type: 'minCount[1]',
+                            prompt: '请至少选择一种类型'
+                        }
+                    ]
+                },
+                terms: {
+                    identifier: 'terms',
+                    rules: [
+                        {
+                            type: 'checked',
+                            prompt: '你必须同意我们的条款才能注册账号'
+                        }
+                    ]
+                },
+                name: {
+                    identifier: 'name',
+                    rules: [
+                        {
+                            type: 'maxLength[20]',
+                            prompt: '店铺名长度不能大于20字'
+                        },
+                        {
+                            type: 'empty',
+                            prompt: '店铺名不能为空'
+                        }
+                    ]
+                },
+                intro: {
+                    identifier: 'intro',
+                    rules: [
+                        {
+                            type: 'maxLength[200]',
+                            prompt: '店铺简介长度不能大于200字'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+
+
+    $(function () {
+        $("#pic").click(function () {
+            $("#upload").click(); //隐藏了input:file样式后，点击头像就可以本地上传
+        });
+    });
+
+    var fileInput = document.querySelector('input[type=file]'),
+        previewImg = document.querySelector('img');
+    fileInput.addEventListener('change', function () {
+        var base64;
+        var file = this.files[0];
+        var reader = new FileReader();
+        // 调用reader.readAsDataURL()方法，把图片转成base64
+        reader.readAsDataURL(file);
+        reader.addEventListener("load", function () {
+            base64 = reader.result.substring(reader.result.indexOf(",") + 1);
+            $.ajax({
+                type: "post",
+                url: "/ShopInfo/updateIcon",
+                data: {
+                    UrlData: base64
+                },
+                success: function (result) {
+                    alert("头像上传成功！");
+                }
+            });
+            previewImg.src = reader.result;
+        }, false);
+    })
+
+
+</script>

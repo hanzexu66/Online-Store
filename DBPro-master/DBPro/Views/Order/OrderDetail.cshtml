@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewData["Title"] = "OrderDetail";
+}
+@model OrderViewModel
+<div class="ui grid container">
+    <div class="two wide column"></div>
+    <div class="one wide column">
+        <a tabindex="0" class="ui animated fade button" onclick="ReturnOrder()" >
+            <div class="visible content">
+                <i class="left arrow icon"></i>
+            </div>
+            <div class="hidden content">返回 </div>
+        </a>     
+    </div>
+    <div class="ten wide column">
+        <div class="ui  segment">
+            <div class="ui segment" id="Order001">
+                <div class="ui grid" style="background-color:#f7f7f7;">
+                    <div class="row">
+                        <div class="fourteen wide  column">
+                            <a style="color:#000000;">@Model.LSItem[0].shopName</a>
+                        </div>
+                        <div class=" two wide  column">
+                            @DBPro.Entity.Order.OrderStateConvert[Model.orderState]
+                        </div>
+                    </div>
+                </div> 
+                <div class="ui hiden grid">
+                    @{ 
+                        double totalPrice = 0;
+                        for (int i = 0; i < Model.LSItem.Count(); ++i)
+                        {
+                            totalPrice += Model.LSItem[i].itemPrice * Model.LSItem[i].itemAmount;
+                            <div class="row" id=@string.Format("goods{0:D3}",i)>
+                                <div class="four wide hidden column">
+                                    <img class="ui small image" src=@Model.LSItem[i].imagePath>
+                                </div>
+                                <div class="six wide hidden column">
+                                    @Model.LSItem[i].itemName
+                                </div>
+                                <div class="three wide hidden column">
+                                    @Model.LSItem[i].itemPrice
+                                </div>
+                                <div class="three wide hidden column">
+                                    @Model.LSItem[i].itemAmount
+                                </div>
+                            </div>
+                        }
+
+                    }
+
+                </div>
+
+
+            </div>
+            <div class="ui red attached segment">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <a class="ui red ribbon label">订单信息</a>
+                    </div>
+                </div>
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="clipboard list icon"></i>订单编号 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.orderID
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="user icon"></i>用户姓名 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.userName
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"><i class="truck icon"></i>收货地址 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.province@Model.city@Model.district@Model.street @Model.detailAdress
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"> <i class="money bill alternate outline icon"></i>订单总价 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @totalPrice 元
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="one wide column"></div>
+                        <div class="six wide column">
+                            <div class="ui label"><i class="calendar alternate outline icon"></i>交易时间 </div>
+                        </div>
+                        <div class="nine wide column">
+                            @Model.createTime
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui two bottom attached buttons">
+                <a class="ui button">
+                    <i class="big rocketchat icon"></i>
+                    联系卖家
+                </a>
+                <a class="ui button" id="001" onclick="RefundEnsure(this.id)">
+                    <i class="big share icon"></i>
+                    退款
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal"id="Ensure">
+    <div class="ui icon header">
+        <i class="trash alternate outline icon"></i>
+        您确定要对此订单退款吗？
+    </div>
+
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon" ></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button" onclick="RefundOrder()">
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal"id="Warning">
+    <div class="ui icon header">
+        <i class="trash alternate outline icon"></i>
+        该订单已进入退款流程！
+    </div>
+
+    <div class="actions">
+        <div class="ui green ok inverted button" >
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+
+<script>
+    function ReturnOrder()
+    {
+        standardPost("/Order/Order", null, null);
+    }
+</script>
+<script>
+    var refundid;//当前被选中退款的订单的id
+    var refundcheck = 0;//当前订单是否已退款过
+    function RefundOrder() {
+        refundcheck = 1;
+    }
+    function RefundEnsure(id) {
+        //console.log(id);
+        //refundid =  id;
+        //console.log(refundid);
+        if (refundcheck == 0) {
+            $("#Ensure")
+                .modal('show')
+                ;
+        }
+        else {
+            $("#Warning")
+                .modal('show')
+                ;
+        }
+    }
+</script>

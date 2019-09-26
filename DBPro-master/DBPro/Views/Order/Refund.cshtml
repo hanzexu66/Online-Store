@@ -1,0 +1,262 @@
+﻿
+@{
+    ViewData["Title"] = "Refund";
+}
+
+<div class="ui grid container">
+    <div class="one wide column"></div>
+    <div class="two wide column">
+        <a tabindex="0" class="ui animated fade button" href="/Order/OrderDetail">
+            <div class="visible content">
+                <i class="left arrow icon"></i>
+            </div>
+            <div class="hidden content">返回 </div>
+        </a>
+    </div>
+</div>
+
+<div class="ui grid container">
+    <div class="two wide column"></div>
+    <div class="twelve wide column">
+        <div class="ui red segment">
+            <div class="ui red segment" id="RefundHead">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="three wide column">
+                            <div class="ui checkbox">
+                                <input type="checkbox" id="all" onclick="Allcheckout(event)">
+                                <label></label>
+                            </div>
+                        </div>
+                        <div class="four wide hidden column">
+                            商品信息
+                        </div>
+                        <div class="two wide column">
+                            单价
+                        </div>
+                        <div class="two wide column">
+                            数量
+                        </div>
+                        <div class="two wide column">
+                            金额
+                        </div>
+                        <div class="three wide column">
+                            状态
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui red  segment" id="depart001">
+                <div class="ui hiden grid">
+                    <div class="row">
+                        <div class="three wide column">
+                            <div class="ui checkbox">
+                                <input type="checkbox" id="box001" onclick="Departcheckout(event)">
+                                <label></label>
+                            </div>
+                            店铺名字
+                        </div>
+                    </div>
+                </div>
+                <div class="ui hiden grid">
+                    <div class="row" id="goods001001">
+                        <div class="three wide column">
+                            <div class="ui child checkbox">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" id="box001001" onclick="Goodscheckout(event)">
+                                    <label></label>
+                                </div>
+                            </div>
+                            <img src="~/images/img1.jpg" height="90" width="90">
+                        </div>
+                        <div class="four wide hidden column" id="name001001">
+                            商品名
+                        </div>
+                        <div class="two wide column">
+                            <label id="price001001">48</label>
+                        </div>
+                        <div class="two wide column">
+                            <label id="number001001">1</label>
+                        </div>
+                        <div class="two wide column">
+                            <label id="total001001">48</label>
+                        </div>
+                        <div class="three wide column">
+                            <div class="ui label">
+                                <i class="cart arrow down icon"></i>
+                                订单中
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="goods001002">
+                        <div class="three wide column">
+                            <div class="ui child checkbox">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" id="box001002" onclick="Goodscheckout(event)">
+                                    <label></label>
+                                </div>
+                            </div>
+                            <img src="~/images/img1.jpg" height="90" width="90">
+                        </div>
+                        <div class="four wide hidden column" id="name001002">
+                            商品名
+                        </div>
+                        <div class="two wide column">
+                            <label id="price001002">78</label>
+                        </div>
+                        <div class="two wide column">
+                            <label id="number001002">1</label>
+                        </div>
+                        <div class="two wide column">
+                            <label id="total001002">78</label>
+                        </div>
+                        <div class="three wide column">
+                            <div class="ui label">
+                                <i class="cart arrow down icon"></i>
+                                订单中
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui red segment" id="Bottom">
+            <div class="ui hiden grid">
+                <div class="row">
+                    <div class="two wide column">
+                        <div class="ui checkbox">
+                            <input type="checkbox" onclick="Allcheckout(event) ">
+                            <label>全选</label>
+                        </div>
+                    </div>
+                    <div class="six wide hidden column">
+                    </div>
+                    <div class="three wide column">
+                        已选商品
+                        <label id="totalnum">0</label>
+                        件
+                    </div>
+                    <div class="three wide column">
+                        合计
+                        <label id="totalprice">0</label>
+                        元
+                    </div>
+                    <div class="two wide column">
+                        <button class="compact ui button" disabled="disabled" id="Refund" onclick="RefundEnsure()">退款 </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="archive icon"></i>
+        您确定要退款吗？
+    </div>
+
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon" id="CancelDelete"></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon" id="EnsureDele"></i>
+            确定
+        </div>
+    </div>
+</div>
+
+<script>
+    var goodsnumber = 0;
+    var pricenumber = 0;
+    var finalnum = document.getElementById("totalnum");
+    var finalprice = document.getElementById("totalprice");
+    var confirmRefund = document.getElementById("Refund");
+    function Allcheckout(event) {
+        var mydepart = event.target.id.substr(3, 3);
+        var re = /^[0-9]+.?[0-9]*$/;
+        var getCheckBox = document.getElementsByTagName('input');
+        for (var i = 0; i < getCheckBox.length; i++) {
+            whichObj = getCheckBox[i];
+            if (whichObj.type == "checkbox") {
+                if (event.target.checked && re.test(whichObj.id.substr(-4, 1)) && !whichObj.checked) {
+                    confirmRefund.disabled = false;
+                    goodsnumber++;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+
+                    pricenumber = pricenumber + parseFloat(totalprice.innerHTML);
+                }
+                else if (!event.target.checked && re.test(whichObj.id.substr(-4, 1)) && whichObj.checked) {
+                    goodsnumber--;
+                    confirmRefund.disabled = true;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+
+                    pricenumber = pricenumber - parseFloat(totalprice.innerHTML);
+                }
+                whichObj.checked = event.target.checked;
+            }
+        }
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+    }
+    function Goodscheckout(event) {
+        var key = event.target.id.substr(3, 6);
+        var totalprice = document.getElementById("total" + key);
+
+        if (event.target.checked) {
+            goodsnumber++;
+            pricenumber = pricenumber + parseFloat(totalprice.innerHTML);
+            confirmRefund.disabled = false;
+        }
+        else {
+            goodsnumber--;
+            pricenumber = pricenumber - parseFloat(totalprice.innerHTML);
+        }
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+        if (goodsnumber == 0) {
+            confirmRefund.disabled = true;
+        }
+    }
+    function Departcheckout(event) {
+        var mydepart = event.target.id.substr(3, 3);
+        var getCheckBox = document.getElementById("depart" + mydepart).getElementsByTagName('input');
+        for (var i = 1; i < getCheckBox.length; i++) {
+            whichObj = getCheckBox[i];
+            if (whichObj.type == "checkbox") {
+
+                if (event.target.checked && !whichObj.checked) {
+                    confirmRefund.disabled = false;
+                    goodsnumber++;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+
+                    pricenumber = pricenumber + parseFloat(totalprice.innerHTML);
+
+                }
+                else if (!event.target.checked && whichObj.checked) {
+                    goodsnumber--;
+                    var key = whichObj.id.substr(3, 6);
+                    var totalprice = document.getElementById("total" + key);
+                    pricenumber = pricenumber - parseFloat(totalprice.innerHTML);
+                }
+                whichObj.checked = event.target.checked;
+            }
+        }
+        finalnum.innerHTML = goodsnumber;
+        finalprice.innerHTML = pricenumber;
+        if (goodsnumber == 0) {
+            confirmRefund.disabled = true;
+        }
+    }
+</script>
+
+<script>
+    function RefundEnsure() {
+        $('.ui.basic.modal').modal('show');
+    }
+</script>

@@ -1,0 +1,335 @@
+﻿@{
+    ViewData["Title"] = "Self";
+}
+@model DBPro.Models.SelfViewModel;
+1<div class="ui centered grid" align="center">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item active" id="menu1">个人信息 </a>
+            <a class="item" id="menu2" href="/Self/Security">安全设置 </a>
+            <a class="item" id="menu3" href="/Self/Address">收货地址 </a>
+            <a class="item" href="/Cart/Cart">购物车 </a>
+            <a class="item" href="/Collect/Collect">收藏夹 </a>
+        </div>
+    </div>
+    @*<div class="one wide column" hidden="hidden"></div>*@
+    <div class="ten wide column">
+        <div class="ui segment" id="text1">
+            <div class="ui centered container" align="center">
+                <img class="ui tiny circular image" src=@Model.IconPath id="headimage" style="width:80px; height:80px;">
+                    <input id="upload" accept="image/*" type="file"  name="file" style="display: none">
+            </div>
+            <br><br>
+            <div class="ui form" id="showinformation">
+                <div class="two fields">
+                    <div class="field">
+                        <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">昵称</font></font></label>
+                        <input readonly="" type="text" value="@Model.nickName">@*昵称放在value里*@
+                    </div>
+                    <div class="field">
+                        <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">余额</font></font></label>
+                        <div class="ui centered container" align="center">
+                            <div class="ui big label" style="background-color:white;">
+                                <i class="yen sign icon"></i><font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        @*余额放在这里*@
+                                    @Model.balance
+                                </font>
+                            </font>
+                        </div>
+                        <a class="ui right floated tiny teal button" href="/Self/Charge">
+                            <i class="gem icon"></i>
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    充值
+                                </font>
+                            </font>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">姓名</font></font></label>
+                        <input readonly="" type="text" value="@Model.name">@*姓名放在value里*@
+                    </div>
+                    <div class="field">
+                        <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">性别</font></font></label>
+                        <input readonly="" type="text" value="@Model.gender">@*性别放在value里*@
+                    </div>
+                </div>
+                <div class="field">
+                    <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">邮箱</font></font></label>
+                    <input readonly="" type="text" value="@Model.email">@*邮箱放在value里*@
+                </div>
+            </div>
+            <br />
+            <div class="ui centered container" align="center">
+                <a class="ui teal button" href="/Self/SelfChange">修改信息</a>
+            </div> 
+        </div>
+
+        <div class="ui segment" hidden="hidden" id="text2">
+            <form class="ui form" method="post" action="/Self/security" id="security">@*密码的修改在这*@
+                <div class="field">
+                    <label>请输入旧密码</label>
+                    <input type="password" name="oldpassword" id="op" placeholder="旧密码">
+                </div>
+                <div class="field">
+                    <label>请输入新密码</label>
+                    <input type="text" name="newpassword" id="np" placeholder="新密码">
+                </div>
+                <div class="field">
+                    <label>请再次输入新密码</label>
+                    <input type="text" name="renewpassword" placeholder="确认密码">
+                </div>
+                <div align="center">
+                    <div class="ui primary submit button" onclick="changepassword()">
+                        确认修改
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+
+        <div class="ui segment" hidden="hidden" id="text3">
+            @*地址在这里*@
+            <div class="ui horizontal divider">已有的收货地址</div>
+            <div class="ui grid container">
+                <div class="sixteen wide column">
+                    <div class="ui red segment">
+                        <div class="ui red segment">
+                            <div class="ui hiden grid">
+                                <div class="row">
+                                    <div class="two wide hidden column">
+                                        收件人
+                                    </div>
+                                    <div class="two wide column">
+                                        省
+                                    </div>
+                                    <div class="two wide column">
+                                        市
+                                    </div>
+                                    <div class="two wide column">
+                                        区
+                                    </div>
+                                    <div class="two wide column">
+                                        街道
+                                    </div>
+                                    <div class="three wide column">
+                                        详细地址
+                                    </div>
+                                    <div class="two wide column">
+                                        手机号
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui red segment" id="depart001">
+                            <div class="ui hiden grid">
+                                <div class="row" id="goods001001">
+                                    <div class="two wide hidden column" id="name001001">
+                                        <label id="name001001">张三</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="province001001">上海</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="city001001">上海</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="district001001">嘉定</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="street001001">xxxxx</label>
+                                    </div>
+                                    <div class="three wide column">
+                                        <label id="details001001">xxxxxxxxxx</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="phone001001">12345</label>
+                                    </div>
+                                    <div class="one wide column">
+                                        <button class="circular ui icon button" onclick="Deletegoods(this.id)" id="delete001001">
+                                            <i class="close icon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="goods001002">
+                                    <div class="two wide hidden column" id="name001002">
+                                        <label id="name001001">李四</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="province001002">上海</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="city001002">上海</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="district001002">嘉定</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="street001002">xxxxx</label>
+                                    </div>
+                                    <div class="three wide column">
+                                        <label id="details001002">xxxxxxxxxx</label>
+                                    </div>
+                                    <div class="two wide column">
+                                        <label id="phone001002">12345</label>
+                                    </div>
+                                    <div class="one wide column">
+                                        <button class="circular ui icon button" onclick="Deletegoods(this.id)" id="delete001002">
+                                            <i class="close icon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="ui centered container" align="center">
+                <a class="ui teal button" href="/Self/AddressAdd">新增收货地址</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <div class="ui basic modal">
+     <div class="ui icon header">
+         <i class="check icon"></i><font style="vertical-align: inherit;">
+             <font style="vertical-align: inherit;">
+                 修改成功
+             </font>
+         </font>
+     </div>
+ </div>
+
+<script>
+    //删除按钮的操作
+    //点击删除之后在数据中删除这个收货地址
+    //刷新页面的函数
+    function re() {
+        location.reload(true);   
+    }
+
+    //菜单间的切换
+ /*   $('#menu1').on('click', function () {
+        $('#text1').show();
+        $('#text2').hide();
+        $('#text3').hide();
+    })
+
+    $('#menu2').on('click', function () {
+        $('#text2').show();
+        $('#text1').hide();
+        $('#text3').hide();
+    })
+
+    $('#menu3').on('click', function () {
+        $('#text3').show();
+        $('#text1').hide();
+        $('#text2').hide();
+    })*/
+
+    //修改密码的输入检测
+    $(document).ready(function () {
+        $('#security').form({
+            fields: {
+                oldpassword: {
+                    identifier: 'oldpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入你的旧密码'
+                        }
+                    ]
+                },
+                newpassword: {
+                    identifier: 'newpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入你修改后的新密码'
+                        },
+                        {
+                            type: 'length[6]',
+                            prompt: '你的密码至少由6个字符组成'
+                        },
+                        {
+                            type: 'different[oldpassword]',
+                            prompt: '新密码和旧密码不能相同'
+                        }
+                    ]
+                },
+                renewpassword: {
+                    identifier: 'renewpassword',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请再次输入你的新密码'
+                        },
+                        {
+                            type: 'match[newpassword]',
+                            prompt: '前后输入不一致'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+
+    //点击修改密码后的操作
+    function changepassword() {
+        if ($('#security').form('is valid')) {
+            $('#security').submit(function () {
+                return false;
+            });
+
+            $('.ui.basic.modal').modal('show');
+
+            setTimeout(subm1, 3000);
+        }
+    }
+
+    function subm1() {
+        $('#security').submit(function () {
+            return true;
+        });
+
+        location.reload(true);
+    }
+
+    $(function () {
+        $("#headimage").click(function () {
+            $("#upload").click(); //隐藏了input:file样式后，点击头像就可以本地上传
+        })
+    });
+
+    var fileInput = document.querySelector('input[type=file]'),
+        previewImg = document.querySelector('img');
+    fileInput.addEventListener('change', function () {
+        var base64;
+        var file = this.files[0];
+        var reader = new FileReader();
+        // 调用reader.readAsDataURL()方法，把图片转成base64
+        reader.readAsDataURL(file);
+        reader.addEventListener("load", function () {
+            base64 = reader.result.substring(reader.result.indexOf(",") + 1);
+            $.ajax({
+                type: "post",
+                url: "/Self/addIcon",
+                data: {
+                    UrlData: base64
+                },
+                success: function (result) {
+                    alert("头像上传成功！");
+                }
+            });
+            previewImg.src = reader.result;
+        }, false);
+    })
+</script>

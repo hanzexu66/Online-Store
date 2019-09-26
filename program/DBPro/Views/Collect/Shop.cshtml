@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Shop";
+}
+@model CollectViewModel
+<div class="ui centered grid" style="width:80%; margin:auto">
+    <div class="two wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="item " href="/Collect/Collect">收藏的商品 </a>
+            <a class="item active">收藏的店铺</a>
+        </div>
+    </div>
+    <div class="eleven wide stretched column">
+        <div class="ui segment">
+            @{
+                for (int i = 0; i < Model.LShop.Count(); i++)
+                {
+                    <div class="ui centered container" id= "@string.Format("shop{0}",Model.LShop[i].shopID)">
+                        <div class="ui celled grid">
+                            <div class="row">
+                                <div class="five wide column">
+                                    <div class="row">
+                                        <div class="ui header click" id="@Model.LShop[i].shopID">
+                                            <img class="ui circular image" src=@Model.LShop[i].imagePath style="width:80px;height:80px">
+                                            <div class="content">
+                                                <a>@Model.LShop[i].shopName</a>
+                                                <div class="ui sub header">
+                                                    <p>卖家:@Model.LShop[i].userName</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <div class="row">
+                                        <div class="ui header">
+                                            <div class="ui sub header">
+                                                <div>
+                                                    <p>销量:@Model.LShop[i].salesVolume&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共有 @Model.LShop[i].itemNum 件宝贝</p>
+                                                    <i class="trash alternate link icon" style="margin-left:200px" id="@Model.LShop[i].shopID"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="eleven wide column">
+                                    <div class="ui three cards">
+                                        @{
+                                            for (int j = 0; j < 3 && j < Model.LShop[i].LSItem.Count(); j++)
+                                            {
+                                                <div class="ui link card" id="@Model.LShop[i].LSItem[j].itemID">
+                                                    <div class="image">
+                                                        <img src="@Model.LShop[i].LSItem[j].imagePath" style="height:130px" />
+                                                    </div>
+                                                    <div class="extra">
+                                                        <i class="yen sign icon"></i>&nbsp;&nbsp;@Model.LShop[i].LSItem[j].itemPrice
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+
+        @*<div class="ui grid container">
+            <div class="five wide column"></div>
+            <div class="six wide column" style="text-align:center">
+                <i class="large chevron left link icon"></i>
+                <b><font size="3">1/4</font></b>
+                <i class="large chevron right link icon"></i>
+            </div>
+            <form method="post" class="four wide column" style="text-align:right">
+                <b>
+                    <font size="3">
+                        第
+                        <div class="ui input mini focus">
+                            <input type="text" value="1" style="width:41px;height:28px">
+                        </div>
+                        页
+                    </font>
+                </b>
+                <button type="submit" class="ui tiny compact button">GO!</button>
+            </form>
+        </div>*@
+    </div>
+</div>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('.ui.rating').rating("disable");
+</script>
+<script>
+    //删除店铺，未实现
+    $('.trash').on('click', function () {
+
+        var shopid = event.currentTarget.id;
+        //alert(event.currentTarget.id);
+
+        $.ajax({
+            type: "post",
+            url: "/Collect/delectShopFromCollection",
+            data: {
+                s_id: shopid
+            },
+            success: function (result) {
+                $(eval("shop" + shopid)).remove();
+                alert(result);
+            },
+            error:
+                function (result) {
+                    alert(result);
+                }
+        });
+        //用ajax把id为this.id的店铺从收藏表中删除
+    });
+    //店铺跳转
+    $('.ui.header.click').on('click', function () {
+        standardPost("/Shops/ShopDetails", this.id, "s_id");
+    });
+    //商品跳转
+    $('.ui.link.card').on('click', function () {
+        standardPost("/Goods/Details", this.id, "i_id");
+    });
+</script>

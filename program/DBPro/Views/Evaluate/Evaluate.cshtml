@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewData["Title"] = "Evaluate";
+}
+@model DBPro.Models.EvaluateViewModel
+<div class="ui centered grid" align="center">
+    <div class="eight wide column">
+        <div class="ui segment">
+            @*<form class="ui form" id="evaluate">*@ @*method="post" onsubmit="Comment()"*@
+            <div class="ui form" id="evaluate" onsubmit="Comment()">
+                <div hidden id="ModelItemID">@Model.itemID</div>
+                <div class="field">
+                    <label>商品名</label>
+                    <input id="itemID" name="itemID" readonly="readonly" value="@Model.item.itemName" />
+                </div>
+                @*<div class="field">
+                    <label>评分</label>
+                    <div class="ui huge star rating" name="grade"></div>
+                </div>*@
+                <div class="field">
+                    <label>评论</label>
+                    <textarea type="text" name="comment" id="cmText"></textarea>
+                </div>
+                <div align="center">
+                    <div class="ui teal submit button" >确认提交</div>
+                </div>
+                <div class="ui error message"></div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="check icon"></i>
+        <font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                评价已提交
+            </font>
+        </font>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.ui.rating').rating({
+            maxRating: 5
+        });
+        $('#evaluate').form({
+            fields: {
+                comment: {
+                    identifier: 'comment',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '请输入评论'
+                        }
+                    ]
+                }
+            }
+        });
+    });
+
+    function Comment() {
+        if ($('.ui.rating').rating('get rating') == 0) {
+            alert("请为商品评分");
+            return false;
+        }   
+        if ($('#evaluate').form('is valid') && $('.ui.rating').rating('get rating') != 0) {
+
+            var id = document.getElementById("ModelItemID").innerHTML;
+            //var comm = document.getElementById("cmText").innerText;
+            var text = $("#cmText").val();
+            //alert(id);
+            //alert(text);
+
+            $.post("/Evaluate/EvaluateHandle", { "i_id": id, "comment": text }, function (result) {
+                //alert(result);
+                if (result == "评价成功") {
+
+                    $('.ui.basic.modal').modal('show');
+                    
+                    standardPost("/Goods/Details", id, "i_id");
+                }
+                else if (result == "账号异常") {
+                    alert(result)
+                    window.location.href = "/Login/Login";
+                }
+                else 
+                    alert(result)
+            }
+                )
+            
+            //setTimeout(reload, 2000);
+            //return true;
+        }
+    }
+
+    function reload() {
+        location.reload(true);
+    }
+
+</script>

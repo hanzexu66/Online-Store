@@ -1,0 +1,445 @@
+﻿@{
+    ViewData["Title"] = "Details";
+}
+@model ItemDetailViewModel
+<div class="ui two column centered grid">
+    <div class="twelve column centered row">
+        @*图片展示*@
+        <div class="six wide column">
+            <div class="container" style="height:50px"></div>
+            <div class="container">
+                <div align="center">
+                    <img id="obj" src=@Model.image[0].imagePath height="350" width="500">
+                </div>
+            </div>
+            <br />
+            <div class="ui two column centered grid">
+                <div class="row">
+                    <div class="column">
+                        <div class="ui raised segment">
+                            <a class="ui red ribbon label" style="width:10%; height:10%">
+                                <font size="3">
+                                    店铺名称
+                                </font>
+                            </a>
+                            <h3 class="ui header" style="text-align:left; vertical-align:inherit">@*店铺名在这*@
+                                 @Model.shopName
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="column" style="margin:auto">
+                        <div class="ui raised segment">
+                            <div class="ui header">@*销量和评分在这*@
+                                评分：<div class="ui star rating" data-rating="@Model.itemScore" data-max-rating="5"></div>
+                            </div>
+                            <div class="ui header">@*销量和评分在这*@
+                                收藏量：@Model.itemFollow
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="ui centered container" align="center">
+                <label>选择数量：</label>
+                <div class="ui icon disabled button" id="minus" onclick="minus1()">
+                    <i class="minus icon"></i>
+                </div>
+                <div class="ui big label">
+                    <i class="shopping bag icon"></i>
+                    <font style="vertical-align: inherit;">
+                        <font id="num">1</font>
+                    </font>
+                </div>
+                <div class="ui icon button" onclick="plus1()">
+                    <i class="add icon"></i>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui labeled icon button" onclick="report(this.id)" id=@Model.itemID>
+                    <i class="exclamation icon"></i>
+                    <font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit;">
+                            举报
+                        </font>
+                    </font>
+                </div>
+            </div>
+        </div>
+        @*商品信息*@
+        <div class="six wide column">
+            <div class="row">
+                <div class="ui raised segment">
+                    <a class="ui red ribbon label" style="width:10%; height:10%">
+                        <font size="3">
+                            商品名称
+                        </font>
+                    </a>
+                    <h2 class="ui header" style="text-align:left; vertical-align:inherit">
+                        @Model.itemName
+                    </h2>
+                    <a class="ui yellow ribbon label" style="width:8%; height:10%">
+                        <font size="3">
+                            库存
+                        </font>
+                    </a>
+                    <h3>@Model.storeNum 件</h3>
+                    <a class="ui blue ribbon label" style="width:8%; height:10%">
+                        <font size="3">
+                            龟龟商城售价
+                        </font>
+                    </a>
+                    <h1>￥ @Model.itemPrice</h1>
+                    <a class="ui green ribbon label" style="width:10%; height:10%">
+                        <font size="3">
+                            商品介绍
+                        </font>
+                    </a>
+                    <h4>@Model.itemIntroduction</h4>
+                </div>
+            </div>
+
+            @*折扣信息*@
+            @*<div class="row">
+                <br />
+                <div class="ui raised segment">
+                    <a class="ui red ribbon label" style="width:10%; height:10%">
+                        <font size="3">
+                            折扣信息
+                        </font>
+                    </a>
+                    <h3 class="ui header" style="text-align:left; vertical-align:inherit">
+                        折扣信息
+                    </h3>
+                </div>
+            </div>*@
+
+            <br /><br /><br />
+
+            @*按钮*@
+            <div class="row">
+                <div class="container">
+                    <a class="huge ui animated fade right floated button" tabindex="0" onclick="buy()">
+                        <div class="visible content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    立即购买
+                                </font>
+                            </font>
+                        </div>
+                        <div class="hidden content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    ￥ @Model.itemPrice
+                                </font>
+                            </font>
+                        </div>
+                    </a>
+                    <div class="huge ui vertical animated right floated button" tabindex="0" onclick="take()">
+                        <div class="visible content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    加入购物车
+                                </font>
+                            </font>
+                        </div>
+                        <div class="hidden content">
+                            <i class="shop icon"></i>
+                        </div>
+                    </div>
+                    <div class="huge ui vertical animated right floated button" tabindex="0" onclick="love()">
+                        <div class="visible content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    收藏
+                                </font>
+                            </font>
+                        </div>
+                        <div class="hidden content">
+                            <i class="heart icon"></i>
+                        </div>
+                    </div>
+                    <div class="huge ui vertical animated right floated button" tabindex="0" onclick="getin(this.id)" id="@Model.shopID" >
+                        <div hidden>@Model.shopID</div>
+                        <div class="visible content">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    进店
+                                </font>
+                            </font>
+                        </div>
+                        <div class="hidden content">
+                            <i class="sign in alternate icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br /><br />
+
+<div class="ui center aligned container">
+    <div class="ui horizontal divider">
+        <font style="vertical-align: inherit;">
+            <h2 style="vertical-align: inherit;">
+                商品评论
+            </h2>
+        </font>
+    </div>
+</div>
+
+<br />
+
+    @{
+        for(int i=0;i<Model.itemComment.Count();++i)
+        {
+        <br /><br />
+        <div class="ui container">
+            <div class="ui comments">
+                <div class="comment">
+                    <a class="avatar">
+                        <img src=@Model.itemComment[i].imagePath>@*头像在这*@
+                    </a>
+                    <div class="content">
+                        <a class="author"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.itemComment[i].userName</font></font></a>@*用户名在这*@
+                        <div class="metadata">
+                            <div class="date"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.itemComment[i].evaluationTime</font></font></div>@*日期在这*@
+                        </div>
+                        <div class="text">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    @*评论内容在这*@
+                                    @Model.itemComment[i].evaluationContent
+                                </font>
+                            </font>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    }
+    
+
+
+@*点击加入购物车后的二级页面*@
+<div class="ui basic modal" id="shopcartconf">
+    <div class="ui icon header">
+        <i class="shop icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                购物车
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是否加入购物车？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            不必了
+        </div>
+        <div class="ui green ok inverted button" onclick="add()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>
+
+@*点击立即购买后的二级页面*@
+<div class="ui basic modal" id="buyconf">
+    <div class="ui icon header">
+        <i class="shop icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                交易
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">你确定要购买选中的这些商品并生成交易信息吗？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            再想想
+        </div>
+        <a class="ui green ok inverted button" onclick="morder()">
+            <i class="checkmark icon"></i>
+            是的，就是这些
+        </a>
+    </div>
+</div>
+
+@*点击收藏后的二级页面*@
+<div class="ui basic modal" id="collectconf">
+    <div class="ui icon header">
+        <i class="heart icon"></i><font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">
+                收藏
+            </font>
+        </font>
+    </div>
+    <div class="content" align="center">
+        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是否加入收藏夹？</font></font></p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            不必了
+        </div>
+        <div class="ui green ok inverted button" onclick="like()">
+            <i class="checkmark icon"></i>
+            好的
+        </div>
+    </div>
+</div>
+<script>
+    //进店按钮点击
+    function getin(id) {
+        //alert(id);
+        
+        standardPost("/Shops/ShopDetails", id, "s_id");
+
+    }
+</script>
+<script language=javascript>
+    var curIndex = 0;
+    var timeInterval = 5000;
+    var arr = new Array();
+    arr[0] = "@Model.image[0].imagePath" ;
+    arr[1] = "@Model.image[0].imagePath" ;
+    arr[2] = "@Model.image[0].imagePath" ;
+
+    setInterval(removeImg, timeInterval);
+
+    function removeImg() {
+        var obj = document.getElementById("obj");
+        $('#obj').transition('fade right');
+        if (curIndex == arr.length - 1) {
+            curIndex = 0;
+        }
+        else {
+            curIndex += 1;
+        }
+        //sleep(1500);
+        setTimeout(sleep_, 200);  
+    }
+
+    function sleep_() {
+        obj.src = arr[curIndex];
+        $('#obj').transition('fade left');
+    }
+
+    //加按钮
+    function plus1() {
+        var p = document.getElementById('num');
+        p.innerHTML++;
+        if (p.innerHTML > 1) {
+            var q = document.getElementById('minus');
+            q.className = 'ui icon button';
+        }
+        else {
+            var q = document.getElementById('minus');
+            q.className = 'ui icon disable button';
+        }
+    }
+
+    //减按钮
+    function minus1() {
+        var p = document.getElementById('num');
+        if (p.innerHTML > 1) {
+            p.innerHTML--;
+        }
+        if (p.innerHTML > 1) {
+            var q = document.getElementById('minus');
+            q.className = 'ui icon button';
+        }
+        else {
+            var q = document.getElementById('minus');
+            q.className = 'ui icon disabled button';
+        }
+    }
+
+    //举报按钮点击
+    function report(id) {
+        //alert(id);
+        standardPost("/Report/Report", id, "i_id");
+    }
+
+    //购物车按钮点击
+    function take() {
+        $('#shopcartconf').modal('show');
+    }
+
+    //收藏按钮点击
+    function love() {
+        $('#collectconf').modal('show');
+    }
+
+    //立即购买按钮点击
+    function buy() {
+        $('#buyconf').modal('show');
+        @*var num = document.getElementById('num').innerHTML;
+        var id =@Model.itemID;
+        var goodslist = new Array();
+        var numberlist = new Array();
+        goodslist[0] = id;
+        numberlist[0] = num;
+         twoArgsPost("/Pay/Pay", goodslist, "i_ids", numberlist, "amounts");*@
+    }
+
+
+
+    //加入到收藏夹事件
+    function like() {
+        var itemid ="@Model.itemID";
+        $.ajax({
+            type: "post",
+            url: "/Collect/AddItemToCollection",
+            data: {
+                i_id: itemid
+            },
+            success: function (result) {
+                alert(result)
+            },
+            error: function (result) {
+                alert(result)
+            }
+        });
+    }
+
+    //加入到购物车事件
+    function add() {
+        var itemid ="@Model.itemID";
+        $.ajax({
+            type: "post",
+            url: "/Cart/AddItem",
+            data: {
+                i_id: itemid
+            },
+            success: function (result) {
+                alert(result)
+            },
+            error: function (result) {
+                alert(result)
+            }
+        });
+    }
+
+    //直接购买
+    function comm() {
+
+    }
+    function morder() {
+        var num = document.getElementById('num').innerHTML;
+        //alert(num);
+        var id ="@Model.itemID";
+        var goodslist = new Array();
+        var numberlist = new Array();
+        goodslist[0] = id;
+        numberlist[0] = num;
+         twoArgsPost("/Pay/Pay", goodslist, "i_ids", numberlist, "amounts");
+    }
+    $('.ui.rating').rating().rating('disable');
+</script>
