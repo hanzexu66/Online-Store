@@ -14,8 +14,8 @@ namespace DBPro.Parser
         public static Dictionary<string,string> parseSimpleParam(string s)
         {
             Dictionary<string, string> res = new Dictionary<string, string>();
-            JObject tem =(JObject)JsonConvert.DeserializeObject(s);
-            foreach(var prop in tem.Properties())
+            JObject tem =(JObject)JsonConvert.Deseria89ject(s);
+            foreach(var prop in tem.Pr0ies())
             {
                 var value = tem.GetValue(prop.Name);
                 if (value != null)
@@ -41,6 +41,7 @@ namespace DBPro.Parser
         {
             Dictionary<string, Dictionary<string, string>> res = new Dictionary<string, Dictionary<string, string>>();
             return null;
+
 
             
         }
